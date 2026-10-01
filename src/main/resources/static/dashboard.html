@@ -169,14 +169,12 @@
             box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.2);
         }
 
-        /* Ẩn mũi tên tăng giảm số trên Chrome, Safari, Edge, Opera */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Ẩn mũi tên tăng giảm số trên Firefox */
         input[type="number"] {
             -moz-appearance: textfield;
         }
@@ -276,7 +274,6 @@
             border-bottom: none;
         }
 
-        /* Ảnh đại diện nhỏ trong bảng */
         .thumb-cell {
             width: 50px;
             height: 65px;
@@ -307,7 +304,6 @@
             display: inline-block;
         }
 
-        /* Nút Xóa */
         .btn-del {
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--danger);
@@ -336,7 +332,6 @@
 </head>
 <body>
 
-<!-- Header Navbar -->
 <header>
     <div class="logo">
         RANDOM<span>CHAR</span>
@@ -368,7 +363,6 @@
                        oninput="updatePreview(this.value)">
             </div>
 
-            <!-- Ô xem trước ảnh -->
             <div class="preview-box" id="preview-box">
                 <img id="preview-img" src="" alt="Preview">
                 <span class="preview-placeholder" id="preview-text">🖼️ Xem trước hình ảnh tại đây</span>
@@ -387,7 +381,6 @@
 
         <div class="table-responsive">
             <table>
-
                 <tbody id="table-body">
                 <!-- Dữ liệu đổ từ API -->
                 </tbody>
@@ -399,7 +392,6 @@
 <script>
     const API_URL = '/api/actors';
 
-    // 1. Tải danh sách diễn viên vào bảng
     async function loadTable() {
         try {
             const res = await fetch(API_URL);
@@ -423,10 +415,10 @@
 
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
-            data.forEach(actor => {
+            data.forEach((actor, index) => {
                 tbody.innerHTML += `
                         <tr>
-                            <td style="color: var(--text-sub); font-weight: 600;">#${actor.id}</td>
+                            <td style="color: var(--text-sub); font-weight: 600;">#${index + 1}</td>
                             <td>
                                 <div class="thumb-cell">
                                     <img src="${actor.imageUrl || fallbackImg}"
@@ -451,7 +443,6 @@
         }
     }
 
-    // 2. Cập nhật ảnh Preview khi gõ/dán link
     function updatePreview(url) {
         const img = document.getElementById('preview-img');
         const text = document.getElementById('preview-text');
@@ -477,7 +468,6 @@
         }
     }
 
-    // 3. Thêm mới diễn viên qua API POST
     async function saveActor(e) {
         e.preventDefault();
         const actor = {
@@ -506,9 +496,8 @@
         }
     }
 
-    // 4. Xóa diễn viên qua API DELETE
     async function deleteActor(id) {
-        if (confirm(`Bạn có chắc chắn muốn xóa diễn viên mang ID #${id}?`)) {
+        if (confirm(`Bạn có chắc chắn muốn xóa diễn viên này?`)) {
             try {
                 const res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
                 if (res.ok) {
