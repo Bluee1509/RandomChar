@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập Quản Trị - RANDOM CHAR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0d0f12;
+            --bg-card: #171a21;
+            --accent: #ff7700;
+            --accent-hover: #ff8c1a;
+            --accent-glow: rgba(255, 119, 0, 0.4);
+            --text-main: #ffffff;
+            --text-sub: #9ca3af;
+            --border-color: #272c38;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Nút quay lại trang chủ ở góc trên */
+        .back-home {
+            position: absolute;
+            top: 24px;
+            left: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            background-color: #12151c;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .back-home:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            transform: translateX(-3px);
+        }
+
+        /* Khối đăng nhập */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 32px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 119, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, #ff4d00 100%);
+        }
+
+        .logo-box {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo span {
+            background: var(--accent);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .login-subtitle {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-sub);
+            letter-spacing: 0.3px;
+        }
+
+        /* Thông báo lỗi */
+        .error-alert {
+            display: none;
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 13px 15px;
+            background-color: #0d0f13;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background-color: #11141a;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent) 0%, #ff4d00 100%);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(255, 119, 0, 0.4);
+            transition: all 0.25s ease;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(255, 119, 0, 0.6);
+            background: linear-gradient(135deg, var(--accent-hover) 0%, #ff5e00 100%);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Footer card */
+        .card-footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/index.html" class="back-home">
+    <span>❮</span> Về Trang Chủ
+</a>
+
+<div class="login-card">
+    <div class="logo-box">
+        <div class="logo">
+            RANDOM<span>CHAR</span>
+        </div>
+        <div class="login-subtitle">HỆ THỐNG QUẢN TRỊ VIÊN</div>
+    </div>
+
+    <!-- Hộp thông báo khi gõ sai tài khoản hoặc mật khẩu -->
+    <div class="error-alert" id="error-box">
+        ⚠️ Tên đăng nhập hoặc mật khẩu không chính xác!
+    </div>
+
+    <!-- Form gửi trực tiếp tới endpoint /login mặc định của Spring Security -->
+    <form action="/login" method="POST">
+        <div class="form-group">
+            <label for="username">Tên tài khoản</label>
+            <input type="text" id="username" name="username" required autofocus placeholder="Nhập tài khoản admin">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required placeholder="Nhập mật khẩu">
+        </div>
+
+        <button type="submit" class="btn-login">Đăng Nhập</button>
+    </form>
+
+    <div class="card-footer">
+        Khu vực dành riêng cho Quản trị viên hệ thống
+    </div>
+</div>
+
+<script>
+    // Tự động kiểm tra URL, nếu có tham số ?error thì hiện hộp cảnh báo
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+        document.getElementById('error-box').style.display = 'block';
+    }
+</script>
+</body>
+</html>
