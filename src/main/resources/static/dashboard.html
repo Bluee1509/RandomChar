@@ -364,7 +364,8 @@
 
             <div class="form-group">
                 <label for="imageUrl">Link ảnh đại diện (URL)</label>
-                <input type="text" id="imageUrl" required placeholder="Dán link https://..." oninput="updatePreview(this.value)">
+                <input type="text" id="imageUrl" required placeholder="Dán link https://..."
+                       oninput="updatePreview(this.value)">
             </div>
 
             <!-- Ô xem trước ảnh -->
@@ -396,7 +397,7 @@
 </div>
 
 <script>
-    const API_URL = 'http://localhost:8080/api/actors';
+    const API_URL = '/api/actors';
 
     // 1. Tải danh sách diễn viên vào bảng
     async function loadTable() {
@@ -488,7 +489,7 @@
         try {
             const res = await fetch(API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(actor)
             });
 
@@ -509,7 +510,7 @@
     async function deleteActor(id) {
         if (confirm(`Bạn có chắc chắn muốn xóa diễn viên mang ID #${id}?`)) {
             try {
-                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
                 if (res.ok) {
                     loadTable();
                 } else {

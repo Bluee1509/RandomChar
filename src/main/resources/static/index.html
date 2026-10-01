@@ -123,14 +123,17 @@
         .carousel-container::-webkit-scrollbar {
             height: 8px;
         }
+
         .carousel-container::-webkit-scrollbar-track {
             background: #14171f;
             border-radius: 10px;
         }
+
         .carousel-container::-webkit-scrollbar-thumb {
             background: #2a303d;
             border-radius: 10px;
         }
+
         .carousel-container::-webkit-scrollbar-thumb:hover {
             background: var(--accent);
         }
@@ -153,7 +156,7 @@
             z-index: 10;
             font-size: 20px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .nav-arrow:hover {
@@ -162,8 +165,13 @@
             border-color: var(--accent);
         }
 
-        .nav-arrow.prev { left: -10px; }
-        .nav-arrow.next { right: -10px; }
+        .nav-arrow.prev {
+            left: -10px;
+        }
+
+        .nav-arrow.next {
+            right: -10px;
+        }
 
         /* Thẻ Diễn Viên (Card) */
         .card {
@@ -287,14 +295,18 @@
             font-weight: 800;
             padding: 4px 10px;
             border-radius: 9999px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
             z-index: 10;
             white-space: nowrap;
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 25px var(--accent-glow); }
-            100% { box-shadow: 0 0 45px var(--accent), 0 0 15px #fff; }
+            0% {
+                box-shadow: 0 0 25px var(--accent-glow);
+            }
+            100% {
+                box-shadow: 0 0 45px var(--accent), 0 0 15px #fff;
+            }
         }
 
         /* Vô hiệu hóa hover khi đang quay roulette */
@@ -375,7 +387,7 @@
 </div>
 
 <script>
-    const API_URL = 'http://localhost:8080/api/actors';
+    const API_URL = '/api/actors';
     let actorsList = [];
     let isRolling = false;
 
@@ -418,7 +430,7 @@
     // 2. Cuộn carousel bằng nút mũi tên
     function scrollCarousel(direction) {
         const container = document.getElementById('carousel');
-        container.scrollBy({ left: direction * 450, behavior: 'smooth' });
+        container.scrollBy({left: direction * 450, behavior: 'smooth'});
     }
 
     // 3. Hiệu ứng quay roulette ngẫu nhiên
@@ -465,7 +477,7 @@
             const activeCard = document.getElementById(`card-${currentIndex}`);
             if (activeCard) {
                 activeCard.classList.add('active-roll');
-                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                activeCard.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
             }
 
             currentStep++;
