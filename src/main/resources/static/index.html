@@ -1,3 +1,530 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Random Character - Vòng Quay May Mắn</title>-->
+<!--    <link rel="preconnect" href="https://fonts.googleapis.com">-->
+<!--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">-->
+<!--    <style>-->
+<!--        :root {-->
+<!--            &#45;&#45;bg-main: #0d0f12;-->
+<!--            &#45;&#45;bg-card: #171a21;-->
+<!--            &#45;&#45;accent: #ff7700;-->
+<!--            &#45;&#45;accent-hover: #ff8c1a;-->
+<!--            &#45;&#45;accent-glow: rgba(255, 119, 0, 0.7);-->
+<!--            &#45;&#45;text-main: #ffffff;-->
+<!--            &#45;&#45;text-sub: #9ca3af;-->
+<!--            &#45;&#45;border-color: #272c38;-->
+<!--        }-->
+
+<!--        * {-->
+<!--            box-sizing: border-box;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            user-select: none;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;-->
+<!--            background-color: var(&#45;&#45;bg-main);-->
+<!--            color: var(&#45;&#45;text-main);-->
+<!--            min-height: 100vh;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            overflow-x: hidden;-->
+<!--        }-->
+
+<!--        /* Header / Logo */-->
+<!--        header {-->
+<!--            background-color: #12151b;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border-color);-->
+<!--            padding: 16px 32px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--        }-->
+
+<!--        .logo {-->
+<!--            font-size: 24px;-->
+<!--            font-weight: 800;-->
+<!--            letter-spacing: -0.5px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            cursor: pointer;-->
+<!--            transition: opacity 0.2s ease, transform 0.2s ease;-->
+<!--        }-->
+
+<!--        .logo:hover {-->
+<!--            opacity: 0.9;-->
+<!--            transform: scale(1.02);-->
+<!--        }-->
+
+<!--        .logo span {-->
+<!--            background: var(&#45;&#45;accent);-->
+<!--            color: #000;-->
+<!--            padding: 2px 8px;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        /* Main Container */-->
+<!--        .container {-->
+<!--            max-width: 1400px;-->
+<!--            width: 100%;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 40px 20px;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        .section-title {-->
+<!--            font-size: 22px;-->
+<!--            font-weight: 700;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.8px;-->
+<!--            margin-bottom: 24px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .section-title::before {-->
+<!--            content: '';-->
+<!--            display: inline-block;-->
+<!--            width: 4px;-->
+<!--            height: 24px;-->
+<!--            background: var(&#45;&#45;accent);-->
+<!--            border-radius: 2px;-->
+<!--        }-->
+
+<!--        /* Khung Carousel trượt ngang */-->
+<!--        .carousel-wrapper {-->
+<!--            position: relative;-->
+<!--            width: 100%;-->
+<!--            margin-bottom: 45px;-->
+<!--        }-->
+
+<!--        .carousel-container {-->
+<!--            display: flex;-->
+<!--            gap: 24px;-->
+<!--            overflow-x: auto;-->
+<!--            scroll-behavior: smooth;-->
+<!--            padding: 30px 20px 35px;-->
+<!--            scrollbar-width: thin;-->
+<!--            scrollbar-color: var(&#45;&#45;accent) #1a1e26;-->
+<!--            justify-content: flex-start;-->
+<!--        }-->
+
+<!--        /* Thanh scrollbar */-->
+<!--        .carousel-container::-webkit-scrollbar {-->
+<!--            height: 8px;-->
+<!--        }-->
+
+<!--        .carousel-container::-webkit-scrollbar-track {-->
+<!--            background: #14171f;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        .carousel-container::-webkit-scrollbar-thumb {-->
+<!--            background: #2a303d;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        .carousel-container::-webkit-scrollbar-thumb:hover {-->
+<!--            background: var(&#45;&#45;accent);-->
+<!--        }-->
+
+<!--        /* Nút trượt trái / phải */-->
+<!--        .nav-arrow {-->
+<!--            position: absolute;-->
+<!--            top: 50%;-->
+<!--            transform: translateY(-60%);-->
+<!--            width: 44px;-->
+<!--            height: 44px;-->
+<!--            background: rgba(18, 21, 27, 0.9);-->
+<!--            border: 1px solid var(&#45;&#45;border-color);-->
+<!--            color: #fff;-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            cursor: pointer;-->
+<!--            z-index: 10;-->
+<!--            font-size: 20px;-->
+<!--            transition: all 0.2s ease;-->
+<!--            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);-->
+<!--        }-->
+
+<!--        .nav-arrow:hover {-->
+<!--            background: var(&#45;&#45;accent);-->
+<!--            color: #000;-->
+<!--            border-color: var(&#45;&#45;accent);-->
+<!--        }-->
+
+<!--        .nav-arrow.prev {-->
+<!--            left: -10px;-->
+<!--        }-->
+
+<!--        .nav-arrow.next {-->
+<!--            right: -10px;-->
+<!--        }-->
+
+<!--        /* Thẻ Diễn Viên (Card) */-->
+<!--        .card {-->
+<!--            flex: 0 0 200px;-->
+<!--            background-color: var(&#45;&#45;bg-card);-->
+<!--            border: 2px solid var(&#45;&#45;border-color);-->
+<!--            border-radius: 12px;-->
+<!--            overflow: hidden;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            position: relative;-->
+<!--            cursor: pointer;-->
+<!--            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),-->
+<!--            border-color 0.3s ease,-->
+<!--            box-shadow 0.3s ease;-->
+<!--        }-->
+
+<!--        /* HIỆU ỨNG KHI LIA CHUỘT (HOVER) */-->
+<!--        .card:hover {-->
+<!--            transform: translateY(-8px) scale(1.02);-->
+<!--            border-color: var(&#45;&#45;accent);-->
+<!--            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 119, 0, 0.35);-->
+<!--            z-index: 3;-->
+<!--        }-->
+
+<!--        .card:hover .card-thumbnail img {-->
+<!--            transform: scale(1.08);-->
+<!--            filter: brightness(1.08);-->
+<!--        }-->
+
+<!--        .card:hover .card-name {-->
+<!--            color: var(&#45;&#45;accent);-->
+<!--        }-->
+
+<!--        .card:hover .card-badge {-->
+<!--            background: rgba(255, 119, 0, 0.85);-->
+<!--            color: #000;-->
+<!--            font-weight: 700;-->
+<!--            border-color: var(&#45;&#45;accent);-->
+<!--        }-->
+
+<!--        .card-thumbnail {-->
+<!--            position: relative;-->
+<!--            width: 100%;-->
+<!--            padding-top: 140%;-->
+<!--            background-color: #0b0c10;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        .card-thumbnail img {-->
+<!--            position: absolute;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            object-fit: cover;-->
+<!--            transition: transform 0.4s ease, filter 0.3s ease;-->
+<!--        }-->
+
+<!--        .card-badge {-->
+<!--            position: absolute;-->
+<!--            bottom: 8px;-->
+<!--            right: 8px;-->
+<!--            background: rgba(0, 0, 0, 0.75);-->
+<!--            backdrop-filter: blur(4px);-->
+<!--            color: #fff;-->
+<!--            font-size: 11px;-->
+<!--            font-weight: 600;-->
+<!--            padding: 3px 8px;-->
+<!--            border-radius: 4px;-->
+<!--            border: 1px solid rgba(255, 255, 255, 0.1);-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+
+<!--        .card-info {-->
+<!--            padding: 12px 14px;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .card-name {-->
+<!--            font-size: 15px;-->
+<!--            font-weight: 700;-->
+<!--            color: var(&#45;&#45;text-main);-->
+<!--            white-space: nowrap;-->
+<!--            overflow: hidden;-->
+<!--            text-overflow: ellipsis;-->
+<!--            transition: color 0.25s ease;-->
+<!--        }-->
+
+<!--        .card-role {-->
+<!--            font-size: 12px;-->
+<!--            color: var(&#45;&#45;text-sub);-->
+<!--            margin-top: 3px;-->
+<!--        }-->
+
+<!--        /* Trạng thái đang quay lướt qua */-->
+<!--        .card.active-roll {-->
+<!--            border-color: #ffaa00 !important;-->
+<!--            transform: scale(1.04) !important;-->
+<!--            box-shadow: 0 0 20px rgba(255, 170, 0, 0.6) !important;-->
+<!--        }-->
+
+<!--        /* Trạng thái trúng thưởng (Winner) */-->
+<!--        .card.winner {-->
+<!--            border-color: var(&#45;&#45;accent) !important;-->
+<!--            transform: scale(1.1) translateY(-6px) !important;-->
+<!--            box-shadow: 0 0 35px var(&#45;&#45;accent-glow), 0 0 10px #ffffff !important;-->
+<!--            z-index: 5 !important;-->
+<!--            animation: pulseGlow 1.2s infinite alternate ease-in-out;-->
+<!--        }-->
+
+<!--        .card.winner::before {-->
+<!--            content: '⭐ WINNER ⭐';-->
+<!--            position: absolute;-->
+<!--            top: 10px;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent) 0%, #ff3b00 100%);-->
+<!--            color: #fff;-->
+<!--            font-size: 11px;-->
+<!--            font-weight: 800;-->
+<!--            padding: 4px 10px;-->
+<!--            border-radius: 9999px;-->
+<!--            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);-->
+<!--            z-index: 10;-->
+<!--            white-space: nowrap;-->
+<!--        }-->
+
+<!--        @keyframes pulseGlow {-->
+<!--            0% {-->
+<!--                box-shadow: 0 0 25px var(&#45;&#45;accent-glow);-->
+<!--            }-->
+<!--            100% {-->
+<!--                box-shadow: 0 0 45px var(&#45;&#45;accent), 0 0 15px #fff;-->
+<!--            }-->
+<!--        }-->
+
+<!--        /* Vô hiệu hóa hover khi đang quay roulette */-->
+<!--        .is-rolling .card {-->
+<!--            pointer-events: none;-->
+<!--        }-->
+
+<!--        /* Khu vực Nút Random */-->
+<!--        .action-area {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            align-items: center;-->
+<!--            gap: 15px;-->
+<!--            margin-top: 10px;-->
+<!--        }-->
+
+<!--        .btn-random {-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent) 0%, #ff4d00 100%);-->
+<!--            color: #fff;-->
+<!--            border: none;-->
+<!--            padding: 16px 45px;-->
+<!--            font-size: 18px;-->
+<!--            font-weight: 800;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 1px;-->
+<!--            border-radius: 9999px;-->
+<!--            cursor: pointer;-->
+<!--            box-shadow: 0 6px 20px rgba(255, 119, 0, 0.45);-->
+<!--            transition: all 0.25s ease;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 12px;-->
+<!--        }-->
+
+<!--        .btn-random:hover:not(:disabled) {-->
+<!--            transform: translateY(-3px) scale(1.03);-->
+<!--            box-shadow: 0 8px 28px rgba(255, 119, 0, 0.65);-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;accent-hover) 0%, #ff5e00 100%);-->
+<!--        }-->
+
+<!--        .btn-random:disabled {-->
+<!--            opacity: 0.6;-->
+<!--            cursor: not-allowed;-->
+<!--            transform: none;-->
+<!--            box-shadow: none;-->
+<!--        }-->
+
+<!--        .status-text {-->
+<!--            font-size: 14px;-->
+<!--            color: var(&#45;&#45;text-sub);-->
+<!--            min-height: 20px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<header>-->
+<!--    <div class="logo" onclick="location.reload()" title="Tải lại trang chủ">-->
+<!--        RANDOM<span>CHAR</span>-->
+<!--    </div>-->
+<!--</header>-->
+
+<!--<div class="container">-->
+<!--    <h2 class="section-title">Danh Sách Diễn Viên</h2>-->
+
+<!--    <div class="carousel-wrapper">-->
+<!--        <button class="nav-arrow prev" onclick="scrollCarousel(-1)">❮</button>-->
+<!--        <div class="carousel-container" id="carousel"></div>-->
+<!--        <button class="nav-arrow next" onclick="scrollCarousel(1)">❯</button>-->
+<!--    </div>-->
+
+<!--    <div class="action-area">-->
+<!--        <button class="btn-random" id="btn-roll" onclick="startRandomRoll()">-->
+<!--            <span>🎲</span> Bắt Đầu Quay-->
+<!--        </button>-->
+<!--        <div class="status-text" id="status-msg">Nhấn nút để chọn ngẫu nhiên diễn viên may mắn</div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    const API_URL = '/api/actors';-->
+<!--    let actorsList = [];-->
+<!--    let isRolling = false;-->
+
+<!--    // 1. Tải danh sách diễn viên-->
+<!--    async function loadActors() {-->
+<!--        try {-->
+<!--            const res = await fetch(API_URL);-->
+<!--            actorsList = await res.json();-->
+<!--            const carousel = document.getElementById('carousel');-->
+<!--            carousel.innerHTML = '';-->
+
+<!--            if (!actorsList || actorsList.length === 0) {-->
+<!--                carousel.innerHTML = '<div style="color: var(&#45;&#45;text-sub); padding: 40px; margin: auto;">Chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm từ Dashboard!</div>';-->
+<!--                document.getElementById('btn-roll').disabled = true;-->
+<!--                return;-->
+<!--            }-->
+
+<!--            actorsList.forEach((actor, index) => {-->
+<!--                const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';-->
+<!--                carousel.innerHTML += `-->
+<!--                    <div class="card" id="card-${index}">-->
+<!--                        <div class="card-thumbnail">-->
+<!--                            <img src="${actor.imageUrl || fallbackImg}"-->
+<!--                                 alt="${actor.name}"-->
+<!--                                 onerror="this.src='${fallbackImg}'">-->
+<!--                            <span class="card-badge">${actor.age} tuổi</span>-->
+<!--                        </div>-->
+<!--                        <div class="card-info">-->
+<!--                            <div class="card-name" title="${actor.name}">${actor.name}</div>-->
+<!--                            <div class="card-role">Diễn viên</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                `;-->
+<!--            });-->
+
+<!--            // Tự động căn giữa thẻ ở vị trí trung tâm ngay khi tải trang xong-->
+<!--            setTimeout(() => {-->
+<!--                const middleIndex = Math.floor(actorsList.length / 2);-->
+<!--                const middleCard = document.getElementById(`card-${middleIndex}`);-->
+<!--                if (middleCard) {-->
+<!--                    middleCard.scrollIntoView({behavior: 'instant', block: 'nearest', inline: 'center'});-->
+<!--                }-->
+<!--            }, 60);-->
+
+<!--        } catch (err) {-->
+<!--            console.error("Lỗi khi tải dữ liệu:", err);-->
+<!--        }-->
+<!--    }-->
+
+<!--    // 2. Cuộn carousel bằng nút mũi tên-->
+<!--    function scrollCarousel(direction) {-->
+<!--        const container = document.getElementById('carousel');-->
+<!--        container.scrollBy({left: direction * 450, behavior: 'smooth'});-->
+<!--    }-->
+
+<!--    // 3. Hiệu ứng quay roulette ngẫu nhiên-->
+<!--    async function startRandomRoll() {-->
+<!--        if (isRolling || actorsList.length === 0) return;-->
+
+<!--        isRolling = true;-->
+<!--        document.body.classList.add('is-rolling');-->
+<!--        const rollBtn = document.getElementById('btn-roll');-->
+<!--        const statusMsg = document.getElementById('status-msg');-->
+<!--        rollBtn.disabled = true;-->
+<!--        statusMsg.innerText = "Đang quay ngẫu nhiên...";-->
+
+<!--        document.querySelectorAll('.card').forEach(c => {-->
+<!--            c.classList.remove('winner', 'active-roll');-->
+<!--        });-->
+
+<!--        let winnerIndex = -1;-->
+<!--        try {-->
+<!--            const res = await fetch(`${API_URL}/random`);-->
+<!--            if (res.ok && res.status !== 204) {-->
+<!--                const winnerData = await res.json();-->
+<!--                winnerIndex = actorsList.findIndex(a => a.id === winnerData.id);-->
+<!--            }-->
+<!--        } catch (e) {-->
+<!--            console.error("Lỗi gọi API random:", e);-->
+<!--        }-->
+
+<!--        if (winnerIndex === -1) {-->
+<!--            winnerIndex = Math.floor(Math.random() * actorsList.length);-->
+<!--        }-->
+
+<!--        const fullRounds = actorsList.length > 3 ? 3 : 5;-->
+<!--        const totalSteps = (fullRounds * actorsList.length) + winnerIndex;-->
+
+<!--        let currentStep = 0;-->
+<!--        let currentIndex = 0;-->
+<!--        let speed = 60;-->
+
+<!--        function rollStep() {-->
+<!--            const prevCard = document.querySelector('.card.active-roll');-->
+<!--            if (prevCard) prevCard.classList.remove('active-roll');-->
+
+<!--            const activeCard = document.getElementById(`card-${currentIndex}`);-->
+<!--            if (activeCard) {-->
+<!--                activeCard.classList.add('active-roll');-->
+<!--                activeCard.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});-->
+<!--            }-->
+
+<!--            currentStep++;-->
+
+<!--            if (currentStep > totalSteps) {-->
+<!--                setTimeout(() => {-->
+<!--                    if (activeCard) {-->
+<!--                        activeCard.classList.remove('active-roll');-->
+<!--                        activeCard.classList.add('winner');-->
+<!--                    }-->
+<!--                    statusMsg.innerHTML = `Chúc mừng! Diễn viên được chọn: <b style="color: var(&#45;&#45;accent); font-size: 16px;">${actorsList[winnerIndex].name}</b>`;-->
+<!--                    rollBtn.disabled = false;-->
+<!--                    isRolling = false;-->
+<!--                    document.body.classList.remove('is-rolling');-->
+<!--                }, 200);-->
+<!--                return;-->
+<!--            }-->
+
+<!--            const remainingSteps = totalSteps - currentStep;-->
+<!--            if (remainingSteps < 8) {-->
+<!--                speed += 40;-->
+<!--            } else if (remainingSteps < 15) {-->
+<!--                speed += 20;-->
+<!--            }-->
+
+<!--            currentIndex = (currentIndex + 1) % actorsList.length;-->
+<!--            setTimeout(rollStep, speed);-->
+<!--        }-->
+
+<!--        rollStep();-->
+<!--    }-->
+
+<!--    loadActors();-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -106,6 +633,9 @@
             position: relative;
             width: 100%;
             margin-bottom: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .carousel-container {
@@ -116,7 +646,10 @@
             padding: 30px 20px 35px;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) #1a1e26;
-            justify-content: flex-start;
+            width: 100%;
+            /* Tự động căn giữa khi ít thẻ, tự giãn để cuộn khi nhiều thẻ */
+            justify-content: safe center;
+            align-items: center;
         }
 
         /* Thanh scrollbar */
@@ -142,7 +675,7 @@
         .nav-arrow {
             position: absolute;
             top: 50%;
-            transform: translateY(-60%);
+            transform: translateY(-50%);
             width: 44px;
             height: 44px;
             background: rgba(18, 21, 27, 0.9);
@@ -187,6 +720,14 @@
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
             border-color 0.3s ease,
             box-shadow 0.3s ease;
+        }
+
+        /* Căn giữa thẻ khi số lượng ít */
+        .carousel-container:not(.has-overflow) .card:first-child {
+            margin-left: auto;
+        }
+        .carousel-container:not(.has-overflow) .card:last-child {
+            margin-right: auto;
         }
 
         /* HIỆU ỨNG KHI LIA CHUỘT (HOVER) */
@@ -373,9 +914,9 @@
     <h2 class="section-title">Danh Sách Diễn Viên</h2>
 
     <div class="carousel-wrapper">
-        <button class="nav-arrow prev" onclick="scrollCarousel(-1)">❮</button>
+        <button class="nav-arrow prev" id="arrow-prev" onclick="scrollCarousel(-1)">❮</button>
         <div class="carousel-container" id="carousel"></div>
-        <button class="nav-arrow next" onclick="scrollCarousel(1)">❯</button>
+        <button class="nav-arrow next" id="arrow-next" onclick="scrollCarousel(1)">❯</button>
     </div>
 
     <div class="action-area">
@@ -391,6 +932,24 @@
     let actorsList = [];
     let isRolling = false;
 
+    // Kiểm tra và ẩn/hiện nút mũi tên nếu danh sách vừa vặn màn hình
+    function checkOverflow() {
+        const carousel = document.getElementById('carousel');
+        const prevBtn = document.getElementById('arrow-prev');
+        const nextBtn = document.getElementById('arrow-next');
+        const hasOverflow = carousel.scrollWidth > carousel.clientWidth;
+
+        if (hasOverflow) {
+            carousel.classList.add('has-overflow');
+            prevBtn.style.display = 'flex';
+            nextBtn.style.display = 'flex';
+        } else {
+            carousel.classList.remove('has-overflow');
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+    }
+
     // 1. Tải danh sách diễn viên
     async function loadActors() {
         try {
@@ -402,6 +961,7 @@
             if (!actorsList || actorsList.length === 0) {
                 carousel.innerHTML = '<div style="color: var(--text-sub); padding: 40px; margin: auto;">Chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm từ Dashboard!</div>';
                 document.getElementById('btn-roll').disabled = true;
+                checkOverflow();
                 return;
             }
 
@@ -423,11 +983,14 @@
                 `;
             });
 
-            // Tự động căn giữa thẻ ở vị trí trung tâm ngay khi tải trang xong
+            checkOverflow();
+            window.addEventListener('resize', checkOverflow);
+
+            // Tự động căn giữa thẻ ở vị trí trung tâm khi nhiều thẻ
             setTimeout(() => {
                 const middleIndex = Math.floor(actorsList.length / 2);
                 const middleCard = document.getElementById(`card-${middleIndex}`);
-                if (middleCard) {
+                if (middleCard && carousel.scrollWidth > carousel.clientWidth) {
                     middleCard.scrollIntoView({behavior: 'instant', block: 'nearest', inline: 'center'});
                 }
             }, 60);
