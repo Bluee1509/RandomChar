@@ -113,10 +113,10 @@
             gap: 24px;
             overflow-x: auto;
             scroll-behavior: smooth;
-            padding: 30px 15px 35px; /* Tăng padding để thẻ khi hover nâng lên không bị cắt viền */
+            padding: 30px 20px 35px;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) #1a1e26;
-            justify-content: center;
+            justify-content: flex-start;
         }
 
         /* Thanh scrollbar */
@@ -422,6 +422,16 @@
                     </div>
                 `;
             });
+
+            // Tự động căn giữa thẻ ở vị trí trung tâm ngay khi tải trang xong
+            setTimeout(() => {
+                const middleIndex = Math.floor(actorsList.length / 2);
+                const middleCard = document.getElementById(`card-${middleIndex}`);
+                if (middleCard) {
+                    middleCard.scrollIntoView({behavior: 'instant', block: 'nearest', inline: 'center'});
+                }
+            }, 60);
+
         } catch (err) {
             console.error("Lỗi khi tải dữ liệu:", err);
         }
@@ -438,7 +448,7 @@
         if (isRolling || actorsList.length === 0) return;
 
         isRolling = true;
-        document.body.classList.add('is-rolling'); // Tạm khóa hover khi quay
+        document.body.classList.add('is-rolling');
         const rollBtn = document.getElementById('btn-roll');
         const statusMsg = document.getElementById('status-msg');
         rollBtn.disabled = true;
@@ -491,7 +501,7 @@
                     statusMsg.innerHTML = `Chúc mừng! Diễn viên được chọn: <b style="color: var(--accent); font-size: 16px;">${actorsList[winnerIndex].name}</b>`;
                     rollBtn.disabled = false;
                     isRolling = false;
-                    document.body.classList.remove('is-rolling'); // Mở lại hover sau khi quay xong
+                    document.body.classList.remove('is-rolling');
                 }, 200);
                 return;
             }
