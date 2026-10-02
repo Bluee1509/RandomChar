@@ -19,6 +19,8 @@
             --border-color: #272c38;
             --danger: #ef4444;
             --danger-hover: #dc2626;
+            --edit: #3b82f6;
+            --edit-hover: #2563eb;
         }
 
         * {
@@ -208,6 +210,12 @@
             padding: 10px;
         }
 
+        .btn-actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .btn-submit {
             width: 100%;
             background: linear-gradient(135deg, var(--accent) 0%, #ff5500 100%);
@@ -226,6 +234,25 @@
             background: linear-gradient(135deg, var(--accent-hover) 0%, #ff6a00 100%);
             transform: translateY(-1px);
             box-shadow: 0 6px 18px rgba(255, 119, 0, 0.5);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            background-color: #242933;
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background-color: #2f3542;
+            color: #fff;
         }
 
         /* Bảng Danh Sách */
@@ -262,6 +289,12 @@
             vertical-align: middle;
         }
 
+        /* Căn giữa tiêu đề và nội dung cho cột Ảnh (2) và cột Tuổi (4) */
+        th:nth-child(2), td:nth-child(2),
+        th:nth-child(4), td:nth-child(4) {
+            text-align: center;
+        }
+
         tbody tr {
             transition: background-color 0.2s;
         }
@@ -281,6 +314,7 @@
             overflow: hidden;
             background: #090a0d;
             border: 1px solid var(--border-color);
+            margin: 0 auto;
         }
 
         .thumb-cell img {
@@ -299,16 +333,40 @@
             color: #d1d5db;
             font-size: 12px;
             font-weight: 600;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             display: inline-block;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--edit);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit:hover {
+            background-color: var(--edit);
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
         }
 
         .btn-del {
             background-color: rgba(239, 68, 68, 0.15);
             color: var(--danger);
             border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 7px 14px;
+            padding: 7px 12px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
@@ -342,11 +400,14 @@
 </header>
 
 <div class="container">
-    <!-- Cột Trái: Form Thêm Diễn Viên -->
+    <!-- Cột Trái: Form Thêm / Sửa Diễn Viên -->
     <div class="panel-card">
-        <h2 class="panel-title">Thêm Diễn Viên Mới</h2>
+        <h2 class="panel-title" id="form-heading">Thêm Diễn Viên Mới</h2>
 
-        <form id="add-actor-form" onsubmit="saveActor(event)">
+        <form id="actor-form" onsubmit="saveActor(event)">
+            <!-- Input ẩn lưu ID khi sửa -->
+            <input type="hidden" id="actor-id">
+
             <div class="form-group">
                 <label for="name">Tên diễn viên</label>
                 <input type="text" id="name" required placeholder="Ví dụ: Sora Aoi">
@@ -368,7 +429,10 @@
                 <span class="preview-placeholder" id="preview-text">🖼️ Xem trước hình ảnh tại đây</span>
             </div>
 
-            <button type="submit" class="btn-submit">➕ Lưu Vào Database</button>
+            <div class="btn-actions-group">
+                <button type="submit" class="btn-submit" id="btn-submit-form">➕ Lưu Vào Database</button>
+                <button type="button" class="btn-cancel" id="btn-cancel-edit" onclick="resetToCreateMode()">❌ Hủy Chỉnh Sửa</button>
+            </div>
         </form>
     </div>
 
@@ -381,6 +445,15 @@
 
         <div class="table-responsive">
             <table>
+                <thead>
+                <tr>
+                    <th style="width: 50px; text-align: center;">#</th>
+                    <th style="width: 80px; text-align: center;">Ảnh</th>
+                    <th>Tên</th>
+                    <th style="width: 110px; text-align: center;">Tuổi</th>
+                    <th style="width: 150px; text-align: center;">Thao tác</th>
+                </tr>
+                </thead>
                 <tbody id="table-body">
                 <!-- Dữ liệu đổ từ API -->
                 </tbody>
@@ -391,52 +464,56 @@
 
 <script>
     const API_URL = '/api/actors';
+    let actorsData = [];
 
     async function loadTable() {
         try {
             const res = await fetch(API_URL);
-            const data = await res.json();
+            actorsData = await res.json();
             const tbody = document.getElementById('table-body');
             const badge = document.getElementById('total-badge');
 
             tbody.innerHTML = '';
-            badge.innerText = `${data.length} Diễn viên`;
+            badge.innerText = `${actorsData.length} Diễn viên`;
 
-            if (!data || data.length === 0) {
+            if (!actorsData || actorsData.length === 0) {
                 tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" class="empty-row">
-                                Hiện chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm ở form bên trái!
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            Hiện chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm ở form bên trái!
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
-            data.forEach((actor, index) => {
+            actorsData.forEach((actor, index) => {
                 tbody.innerHTML += `
-                        <tr>
-                            <td style="color: var(--text-sub); font-weight: 600;">#${index + 1}</td>
-                            <td>
-                                <div class="thumb-cell">
-                                    <img src="${actor.imageUrl || fallbackImg}"
-                                         alt="${actor.name}"
-                                         onerror="this.src='${fallbackImg}'">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="actor-title">${actor.name}</div>
-                            </td>
-                            <td>
-                                <span class="age-tag">${actor.age} tuổi</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button class="btn-del" onclick="deleteActor(${actor.id})">Xóa</button>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td style="color: var(--text-sub); font-weight: 600; text-align: center;">#${index + 1}</td>
+                        <td>
+                            <div class="thumb-cell">
+                                <img src="${actor.imageUrl || fallbackImg}"
+                                     alt="${actor.name}"
+                                     onerror="this.src='${fallbackImg}'">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="actor-title">${actor.name}</div>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="age-tag">${actor.age} tuổi</span>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-edit" onclick="startEdit(${actor.id})">✏️ Sửa</button>
+                                <button class="btn-del" onclick="deleteActor(${actor.id})">🗑 Xóa</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
         } catch (err) {
             console.error("Lỗi khi tải bảng:", err);
@@ -468,27 +545,64 @@
         }
     }
 
+    // Kích hoạt chế độ sửa khi bấm nút Sửa
+    function startEdit(id) {
+        const actor = actorsData.find(a => a.id === id);
+        if (!actor) return;
+
+        document.getElementById('actor-id').value = actor.id;
+        document.getElementById('name').value = actor.name;
+        document.getElementById('age').value = actor.age;
+        document.getElementById('imageUrl').value = actor.imageUrl || '';
+
+        // Cập nhật giao diện form
+        document.getElementById('form-heading').innerText = 'Chỉnh Sửa Diễn Viên';
+        document.getElementById('btn-submit-form').innerText = '💾 Cập Nhật Thay Đổi';
+        document.getElementById('btn-cancel-edit').style.display = 'block';
+
+        // Load preview ảnh hiện tại
+        updatePreview(actor.imageUrl || '');
+
+        // Cuộn mượt lên form trên thiết bị di động
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Hủy sửa và đưa form về trạng thái Thêm mới
+    function resetToCreateMode() {
+        document.getElementById('actor-id').value = '';
+        document.getElementById('actor-form').reset();
+        document.getElementById('form-heading').innerText = 'Thêm Diễn Viên Mới';
+        document.getElementById('btn-submit-form').innerText = '➕ Lưu Vào Database';
+        document.getElementById('btn-cancel-edit').style.display = 'none';
+        updatePreview('');
+    }
+
+    // Xử lý gửi dữ liệu (POST khi thêm mới, PATCH khi cập nhật)
     async function saveActor(e) {
         e.preventDefault();
+        const id = document.getElementById('actor-id').value;
         const actor = {
             name: document.getElementById('name').value.trim(),
             age: parseInt(document.getElementById('age').value),
             imageUrl: document.getElementById('imageUrl').value.trim()
         };
 
+        const isEditing = Boolean(id);
+        const requestUrl = isEditing ? `${API_URL}/${id}` : API_URL;
+        const requestMethod = isEditing ? 'PATCH' : 'POST';
+
         try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
+            const res = await fetch(requestUrl, {
+                method: requestMethod,
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(actor)
             });
 
             if (res.ok) {
-                document.getElementById('add-actor-form').reset();
-                updatePreview('');
+                resetToCreateMode();
                 loadTable();
             } else {
-                alert('Lỗi khi thêm diễn viên vào hệ thống!');
+                alert(isEditing ? 'Lỗi khi cập nhật diễn viên!' : 'Lỗi khi thêm diễn viên vào hệ thống!');
             }
         } catch (err) {
             console.error("Lỗi kết nối:", err);
@@ -501,6 +615,9 @@
             try {
                 const res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
                 if (res.ok) {
+                    if (document.getElementById('actor-id').value == id) {
+                        resetToCreateMode();
+                    }
                     loadTable();
                 } else {
                     alert('Không thể xóa diễn viên này!');
