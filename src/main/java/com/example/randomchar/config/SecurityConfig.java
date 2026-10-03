@@ -23,6 +23,7 @@ public class SecurityConfig {
                         // 2. Dashboard và các hành động Thêm/Xóa bắt buộc phải đăng nhập
                         .requestMatchers("/dashboard.html").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/actors/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/actors/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/actors/**").authenticated()
 
                         .anyRequest().permitAll()

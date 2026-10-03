@@ -36,22 +36,30 @@ public class ActorController {
         Actor savedActor = actorRepository.save(actor);
         return new ResponseEntity<>(savedActor, HttpStatus.CREATED);
     }
+
     @PatchMapping("/{id}")
     public ResponseEntity<Actor> patchActor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return actorRepository.findById(id).map(actor -> {
             if (updates.containsKey("name") && updates.get("name") != null) {
-                actor.setName(updates.get("name").toString());
+                actor.setName(updates.get("name").toString().trim());
             }
-            if (updates.containsKey("age") && updates.get("age") != null) {
-                actor.setAge(Integer.parseInt(updates.get("age").toString()));
+            if (updates.containsKey("birthYear") && updates.get("birthYear") != null) {
+                actor.setBirthYear(Integer.parseInt(updates.get("birthYear").toString()));
             }
             if (updates.containsKey("imageUrl") && updates.get("imageUrl") != null) {
-                actor.setImageUrl(updates.get("imageUrl").toString());
+                actor.setImageUrl(updates.get("imageUrl").toString().trim());
+            }
+            if (updates.containsKey("famousCode")) {
+                actor.setFamousCode(updates.get("famousCode") != null ? updates.get("famousCode").toString().trim() : null);
+            }
+            if (updates.containsKey("webUrl")) {
+                actor.setWebUrl(updates.get("webUrl") != null ? updates.get("webUrl").toString().trim() : null);
             }
 
             return ResponseEntity.ok(actorRepository.save(actor));
         }).orElse(ResponseEntity.notFound().build());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteActor(@PathVariable Long id) {
         if (actorRepository.existsById(id)) {

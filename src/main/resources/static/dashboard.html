@@ -38,7 +38,6 @@
             flex-direction: column;
         }
 
-        /* Header / Navbar */
         header {
             background-color: #12151b;
             border-bottom: 1px solid var(--border-color);
@@ -89,14 +88,13 @@
             color: var(--accent);
         }
 
-        /* Container Layout 2 Cột */
         .container {
-            max-width: 1320px;
+            max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             padding: 30px 20px 60px;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 30px;
             align-items: start;
         }
@@ -107,7 +105,6 @@
             }
         }
 
-        /* Card Khung Chứa */
         .panel-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -139,9 +136,8 @@
             border: 1px solid rgba(255, 119, 0, 0.3);
         }
 
-        /* Form Nhập Liệu */
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         label {
@@ -149,14 +145,14 @@
             font-size: 13px;
             font-weight: 600;
             color: var(--text-sub);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
 
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="number"], input[type="url"] {
             width: 100%;
-            padding: 12px 14px;
+            padding: 11px 13px;
             background-color: #0e1015;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -166,25 +162,23 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        input[type="text"]:focus, input[type="number"]:focus {
+        input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.2);
         }
 
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .calculated-age-hint {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 5px;
+            font-weight: 600;
+            display: block;
+            min-height: 16px;
         }
 
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        /* Live Preview ảnh */
         .preview-box {
             width: 100%;
-            height: 180px;
+            height: 160px;
             background-color: #0e1015;
             border: 2px dashed var(--border-color);
             border-radius: 8px;
@@ -192,7 +186,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             position: relative;
         }
 
@@ -233,7 +227,6 @@
         .btn-submit:hover {
             background: linear-gradient(135deg, var(--accent-hover) 0%, #ff6a00 100%);
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(255, 119, 0, 0.5);
         }
 
         .btn-cancel {
@@ -255,7 +248,6 @@
             color: #fff;
         }
 
-        /* Bảng Danh Sách */
         .table-responsive {
             overflow-x: auto;
             border-radius: 8px;
@@ -289,27 +281,18 @@
             vertical-align: middle;
         }
 
-        /* Căn giữa tiêu đề và nội dung cho cột Ảnh (2) và cột Tuổi (4) */
         th:nth-child(2), td:nth-child(2),
         th:nth-child(4), td:nth-child(4) {
             text-align: center;
-        }
-
-        tbody tr {
-            transition: background-color 0.2s;
         }
 
         tbody tr:hover {
             background-color: var(--bg-card-hover);
         }
 
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
         .thumb-cell {
-            width: 50px;
-            height: 65px;
+            width: 48px;
+            height: 62px;
             border-radius: 6px;
             overflow: hidden;
             background: #090a0d;
@@ -328,14 +311,26 @@
             color: var(--text-main);
         }
 
-        .age-tag {
+        .birth-tag {
             background: #20242e;
             color: #d1d5db;
             font-size: 12px;
             font-weight: 600;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
             display: inline-block;
+        }
+
+        .code-pill {
+            background: #1c222d;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 2px;
+            display: inline-block;
+            border: 1px solid rgba(255, 119, 0, 0.2);
         }
 
         .action-btns {
@@ -359,7 +354,6 @@
         .btn-edit:hover {
             background-color: var(--edit);
             color: #fff;
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
         }
 
         .btn-del {
@@ -377,7 +371,6 @@
         .btn-del:hover {
             background-color: var(--danger);
             color: #fff;
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.4);
         }
 
         .empty-row {
@@ -387,41 +380,15 @@
             font-size: 14px;
         }
 
-        /* --- DÁN BẮT ĐẦU TỪ ĐÂY --- */
         @media (max-width: 640px) {
-            header {
-                padding: 12px 16px;
-            }
-            .container {
-                padding: 15px 10px;
-                gap: 20px;
-            }
-            .panel-card {
-                padding: 16px 12px;
-            }
-            .preview-box {
-                height: 130px;
-            }
-            th, td {
-                padding: 10px 6px;
-                font-size: 13px;
-            }
-            .thumb-cell {
-                width: 40px;
-                height: 52px;
-            }
-            .action-btns {
-                flex-direction: column;
-                gap: 6px;
-            }
-            .btn-edit, .btn-del {
-                padding: 6px 8px;
-                font-size: 12px;
-                width: 100%;
-            }
+            header { padding: 12px 16px; }
+            .container { padding: 15px 10px; gap: 20px; }
+            .panel-card { padding: 16px 12px; }
+            .preview-box { height: 130px; }
+            th, td { padding: 10px 6px; font-size: 13px; }
+            .action-btns { flex-direction: column; gap: 6px; }
+            .btn-edit, .btn-del { padding: 6px 8px; font-size: 12px; width: 100%; }
         }
-        /* --- KẾT THÚC ĐOẠN DÁN --- */
-
     </style>
 </head>
 <body>
@@ -436,12 +403,11 @@
 </header>
 
 <div class="container">
-    <!-- Cột Trái: Form Thêm / Sửa Diễn Viên -->
+    <!-- Cột Trái: Form Thêm / Sửa -->
     <div class="panel-card">
         <h2 class="panel-title" id="form-heading">Thêm Diễn Viên Mới</h2>
 
         <form id="actor-form" onsubmit="saveActor(event)">
-            <!-- Input ẩn lưu ID khi sửa -->
             <input type="hidden" id="actor-id">
 
             <div class="form-group">
@@ -450,19 +416,29 @@
             </div>
 
             <div class="form-group">
-                <label for="age">Tuổi</label>
-                <input type="number" id="age" required min="1" max="120" placeholder="Ví dụ: 25">
+                <label for="birthYear">Năm sinh</label>
+                <input type="number" id="birthYear" required min="1900" max="2030" placeholder="Ví dụ: 1999" oninput="calculateAgePreview(this.value)">
+                <span class="calculated-age-hint" id="age-preview"></span>
             </div>
 
             <div class="form-group">
                 <label for="imageUrl">Link ảnh đại diện (URL)</label>
-                <input type="text" id="imageUrl" required placeholder="Dán link https://..."
-                       oninput="updatePreview(this.value)">
+                <input type="url" id="imageUrl" required placeholder="https://..." oninput="updatePreview(this.value)">
             </div>
 
             <div class="preview-box" id="preview-box">
                 <img id="preview-img" src="" alt="Preview">
                 <span class="preview-placeholder" id="preview-text">🖼️ Xem trước hình ảnh tại đây</span>
+            </div>
+
+            <div class="form-group">
+                <label for="famousCode">Code nổi bật (cách nhau bởi dấu phẩy)</label>
+                <input type="text" id="famousCode" placeholder="Ví dụ: SSIS-888, MIDE-123">
+            </div>
+
+            <div class="form-group">
+                <label for="webUrl">Link Website / Profile</label>
+                <input type="url" id="webUrl" placeholder="https://...">
             </div>
 
             <div class="btn-actions-group">
@@ -472,7 +448,7 @@
         </form>
     </div>
 
-    <!-- Cột Phải: Bảng Danh Sách Diễn Viên -->
+    <!-- Cột Phải: Bảng Danh Sách -->
     <div class="panel-card">
         <div class="panel-title">
             <span>Danh Sách Quản Lý</span>
@@ -483,16 +459,14 @@
             <table>
                 <thead>
                 <tr>
-                    <th style="width: 50px; text-align: center;">#</th>
-                    <th style="width: 80px; text-align: center;">Ảnh</th>
-                    <th>Tên</th>
-                    <th style="width: 110px; text-align: center;">Tuổi</th>
-                    <th style="width: 150px; text-align: center;">Thao tác</th>
+                    <th style="width: 45px; text-align: center;">#</th>
+                    <th style="width: 65px; text-align: center;">Ảnh</th>
+                    <th>Tên & Code</th>
+                    <th style="width: 130px; text-align: center;">Năm sinh (Tuổi)</th>
+                    <th style="width: 140px; text-align: center;">Thao tác</th>
                 </tr>
                 </thead>
-                <tbody id="table-body">
-                <!-- Dữ liệu đổ từ API -->
-                </tbody>
+                <tbody id="table-body"></tbody>
             </table>
         </div>
     </div>
@@ -501,6 +475,17 @@
 <script>
     const API_URL = '/api/actors';
     let actorsData = [];
+    const currentYear = new Date().getFullYear();
+
+    function calculateAgePreview(yearVal) {
+        const hint = document.getElementById('age-preview');
+        const year = parseInt(yearVal);
+        if (year && year > 1900 && year <= currentYear) {
+            hint.innerText = `💡 Tương đương: ${currentYear - year} tuổi`;
+        } else {
+            hint.innerText = '';
+        }
+    }
 
     async function loadTable() {
         try {
@@ -513,34 +498,37 @@
             badge.innerText = `${actorsData.length} Diễn viên`;
 
             if (!actorsData || actorsData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="empty-row">
-                            Hiện chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm ở form bên trái!
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-row">Chưa có dữ liệu diễn viên nào.</td></tr>`;
                 return;
             }
 
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
             actorsData.forEach((actor, index) => {
+                const birth = actor.birthYear || '---';
+                const calculatedAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : '---');
+
+                let codesHtml = '';
+                if (actor.famousCode) {
+                    const codes = actor.famousCode.split(',').map(c => c.trim()).filter(c => c.length > 0);
+                    codesHtml = codes.slice(0, 3).map(c => `<span class="code-pill">${c}</span>`).join('');
+                    if (codes.length > 3) codesHtml += `<span style="font-size:11px;color:var(--text-sub)">+${codes.length - 3}</span>`;
+                }
+
                 tbody.innerHTML += `
                     <tr>
                         <td style="color: var(--text-sub); font-weight: 600; text-align: center;">#${index + 1}</td>
                         <td>
                             <div class="thumb-cell">
-                                <img src="${actor.imageUrl || fallbackImg}"
-                                     alt="${actor.name}"
-                                     onerror="this.src='${fallbackImg}'">
+                                <img src="${actor.imageUrl || fallbackImg}" alt="${actor.name}" onerror="this.src='${fallbackImg}'">
                             </div>
                         </td>
                         <td>
                             <div class="actor-title">${actor.name}</div>
+                            <div>${codesHtml}</div>
                         </td>
                         <td style="text-align: center;">
-                            <span class="age-tag">${actor.age} tuổi</span>
+                            <span class="birth-tag">${birth} (${calculatedAge})</span>
                         </td>
                         <td>
                             <div class="action-btns">
@@ -581,46 +569,45 @@
         }
     }
 
-    // Kích hoạt chế độ sửa khi bấm nút Sửa
     function startEdit(id) {
         const actor = actorsData.find(a => a.id === id);
         if (!actor) return;
 
         document.getElementById('actor-id').value = actor.id;
         document.getElementById('name').value = actor.name;
-        document.getElementById('age').value = actor.age;
+        document.getElementById('birthYear').value = actor.birthYear || '';
         document.getElementById('imageUrl').value = actor.imageUrl || '';
+        document.getElementById('famousCode').value = actor.famousCode || '';
+        document.getElementById('webUrl').value = actor.webUrl || '';
 
-        // Cập nhật giao diện form
+        calculateAgePreview(actor.birthYear || '');
         document.getElementById('form-heading').innerText = 'Chỉnh Sửa Diễn Viên';
         document.getElementById('btn-submit-form').innerText = '💾 Cập Nhật Thay Đổi';
         document.getElementById('btn-cancel-edit').style.display = 'block';
 
-        // Load preview ảnh hiện tại
         updatePreview(actor.imageUrl || '');
-
-        // Cuộn mượt lên form trên thiết bị di động
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Hủy sửa và đưa form về trạng thái Thêm mới
     function resetToCreateMode() {
         document.getElementById('actor-id').value = '';
         document.getElementById('actor-form').reset();
+        document.getElementById('age-preview').innerText = '';
         document.getElementById('form-heading').innerText = 'Thêm Diễn Viên Mới';
         document.getElementById('btn-submit-form').innerText = '➕ Lưu Vào Database';
         document.getElementById('btn-cancel-edit').style.display = 'none';
         updatePreview('');
     }
 
-    // Xử lý gửi dữ liệu (POST khi thêm mới, PATCH khi cập nhật)
     async function saveActor(e) {
         e.preventDefault();
         const id = document.getElementById('actor-id').value;
         const actor = {
             name: document.getElementById('name').value.trim(),
-            age: parseInt(document.getElementById('age').value),
-            imageUrl: document.getElementById('imageUrl').value.trim()
+            birthYear: parseInt(document.getElementById('birthYear').value),
+            imageUrl: document.getElementById('imageUrl').value.trim(),
+            famousCode: document.getElementById('famousCode').value.trim(),
+            webUrl: document.getElementById('webUrl').value.trim()
         };
 
         const isEditing = Boolean(id);

@@ -222,7 +222,7 @@
             margin-right: auto;
         }
 
-        /* Hover Card (Hiệu ứng cũ giữ nguyên 100%) */
+        /* Hover Card */
         .card:hover {
             transform: translateY(-8px) scale(1.02);
             border-color: var(--accent);
@@ -393,6 +393,198 @@
             min-height: 20px;
         }
 
+        /* --- POPUP / MODAL CHI TIẾT DIỄN VIÊN TỰ ĐỘNG SCALE --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            max-width: 540px;
+            width: 100%;
+            max-height: 90vh;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 119, 0, 0.2);
+            position: relative;
+            transform: translateY(20px) scale(0.96);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            background: rgba(18, 21, 27, 0.8);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .modal-body {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(90vh - 75px);
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #2a303d;
+            border-radius: 4px;
+        }
+
+        .modal-avatar {
+            width: 140px;
+            height: 190px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #090a0d;
+        }
+
+        .modal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .modal-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 6px;
+            display: inline-block;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .info-label {
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 600;
+            width: 95px;
+            flex-shrink: 0;
+        }
+
+        .info-val {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* KHUNG CHỨA CÁC MÃ CODE */
+        .codes-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .code-tag {
+            background: #20242e;
+            color: var(--accent);
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 119, 0, 0.3);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            word-break: break-word;
+        }
+
+        .modal-footer {
+            background-color: #12151b;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            flex-shrink: 0;
+        }
+
+        .btn-visit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-visit:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 119, 0, 0.4);
+        }
+
         /* Responsive Mobile */
         @media (max-width: 640px) {
             header {
@@ -414,6 +606,33 @@
             .btn-random {
                 padding: 14px 32px;
                 font-size: 16px;
+            }
+            .modal-body {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 20px 16px;
+            }
+            .modal-avatar {
+                width: 120px;
+                height: 160px;
+            }
+            .modal-name {
+                margin: 0 auto;
+            }
+            .info-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            .info-label {
+                width: auto;
+            }
+            .codes-wrapper {
+                justify-content: center;
+            }
+            .modal-footer {
+                justify-content: center;
             }
         }
     </style>
@@ -443,10 +662,45 @@
     </div>
 </div>
 
+<!-- POPUP MODAL CHI TIẾT TỰ ĐỘNG SCALE -->
+<div class="modal-overlay" id="actor-modal" onclick="handleBackdropClick(event)">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()" title="Đóng">✕</button>
+        <div class="modal-body">
+            <div class="modal-avatar">
+                <img id="modal-img" src="" alt="Avatar">
+            </div>
+            <div class="modal-info">
+                <div class="modal-name" id="modal-name">Tên diễn viên</div>
+                <div class="info-row">
+                    <span class="info-label">Năm sinh:</span>
+                    <span class="info-val" id="modal-birth">Chưa cập nhật</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tuổi:</span>
+                    <span class="info-val" id="modal-age">Chưa rõ</span>
+                </div>
+                <div class="info-row" style="align-items: flex-start;">
+                    <span class="info-label" style="margin-top: 3px;">Code nổi bật:</span>
+                    <div class="codes-wrapper" id="modal-codes-container">
+                        <!-- Tự động sinh các tag code tại đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-visit" id="modal-link">
+                🌐 Xem Profile Chi Tiết ↗
+            </a>
+        </div>
+    </div>
+</div>
+
 <script>
     const API_URL = '/api/actors';
     let actorsList = [];
     let isRolling = false;
+    const currentYear = new Date().getFullYear();
 
     function checkOverflow() {
         const carousel = document.getElementById('carousel');
@@ -465,7 +719,7 @@
         }
     }
 
-    // 1. Tải danh sách diễn viên (CHỈ ĐÚNG SỐ LƯỢNG THẬT TRONG DB)
+    // 1. Tải danh sách diễn viên (Hiển thị tuổi tự tính từ birthYear)
     async function loadActors() {
         try {
             const res = await fetch(API_URL);
@@ -483,13 +737,16 @@
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
             actorsList.forEach((actor, index) => {
+                // Ưu tiên tuổi do Backend tính, nếu không thì lấy năm hiện tại trừ năm sinh
+                const calculatedAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : '---');
+
                 carousel.innerHTML += `
-                    <div class="card" id="card-${index}">
+                    <div class="card" id="card-${index}" onclick="openModal(${index})">
                         <div class="card-thumbnail">
                             <img src="${actor.imageUrl || fallbackImg}"
                                  alt="${actor.name}"
                                  onerror="this.src='${fallbackImg}'">
-                            <span class="card-badge">${actor.age} tuổi</span>
+                            <span class="card-badge">${calculatedAge}</span>
                         </div>
                         <div class="card-info">
                             <div class="card-name" title="${actor.name}">${actor.name}</div>
@@ -502,7 +759,6 @@
             checkOverflow();
             window.addEventListener('resize', checkOverflow);
 
-            // Căn giữa danh sách nếu dài
             setTimeout(() => {
                 const middleIndex = Math.floor(actorsList.length / 2);
                 const middleCard = document.getElementById(`card-${middleIndex}`);
@@ -516,29 +772,87 @@
         }
     }
 
-    // 2. Cuộn bằng nút mũi tên
+    // 2. Mở Popup chi tiết (Tự tính tuổi từ Năm sinh)
+    function openModal(index) {
+        if (isRolling) return;
+
+        const actor = actorsList[index];
+        if (!actor) return;
+
+        const birthYear = actor.birthYear ? actor.birthYear : 'Chưa cập nhật';
+        const displayAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : 'Chưa rõ');
+
+        // Tách chuỗi code nếu có nhiều mã
+        const rawCode = actor.famousCode || actor.code || '';
+        const codesContainer = document.getElementById('modal-codes-container');
+        codesContainer.innerHTML = '';
+
+        if (rawCode && rawCode.trim().length > 0) {
+            const codeList = rawCode.split(',').map(c => c.trim()).filter(c => c.length > 0);
+            codeList.forEach(c => {
+                const tag = document.createElement('span');
+                tag.className = 'code-tag';
+                tag.innerText = c;
+                codesContainer.appendChild(tag);
+            });
+        } else {
+            codesContainer.innerHTML = '<span style="color: var(--text-sub); font-size: 13px;">Chưa cập nhật</span>';
+        }
+
+        // Link dẫn tới web profile
+        const webUrl = (actor.webUrl && actor.webUrl.trim().length > 0)
+            ? actor.webUrl.trim()
+            : `https://www.google.com/search?q=${encodeURIComponent(actor.name)}`;
+
+        const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+
+        document.getElementById('modal-img').src = actor.imageUrl || fallbackImg;
+        document.getElementById('modal-name').innerText = actor.name;
+        document.getElementById('modal-birth').innerText = birthYear;
+        document.getElementById('modal-age').innerText = displayAge;
+
+        const linkEl = document.getElementById('modal-link');
+        linkEl.href = webUrl;
+
+        document.getElementById('actor-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('actor-modal').classList.remove('active');
+    }
+
+    function handleBackdropClick(e) {
+        if (e.target.id === 'actor-modal') {
+            closeModal();
+        }
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // 3. Cuộn bằng nút mũi tên
     function scrollCarousel(direction) {
         const container = document.getElementById('carousel');
         container.scrollBy({left: direction * 420, behavior: 'smooth'});
     }
 
-    // 3. Vòng quay Roulette: Lúc đầu vút nhanh, lúc gần tới thì sáng viền từng ô rà phanh
+    // 4. Vòng quay Roulette
     async function startRandomRoll() {
         if (isRolling || actorsList.length === 0) return;
 
+        closeModal();
         isRolling = true;
-        document.body.classList.add('is-rolling'); // Ẩn thanh scrollbar và nút mũi tên
+        document.body.classList.add('is-rolling');
         const rollBtn = document.getElementById('btn-roll');
         const statusMsg = document.getElementById('status-msg');
         rollBtn.disabled = true;
         statusMsg.innerText = "Đang quay ngẫu nhiên...";
 
-        // Xóa class winner/active cũ
         document.querySelectorAll('.card').forEach(c => {
             c.classList.remove('winner', 'active-roll');
         });
 
-        // Lấy người thắng từ API Backend
         let winnerIndex = -1;
         try {
             const res = await fetch(`${API_URL}/random`);
@@ -554,16 +868,14 @@
             winnerIndex = Math.floor(Math.random() * actorsList.length);
         }
 
-        // Tính tổng số bước chạy (quay 4-6 vòng rồi đáp đúng winnerIndex)
         const fullRounds = actorsList.length > 5 ? 4 : 6;
         const totalSteps = (fullRounds * actorsList.length) + winnerIndex;
 
         let currentStep = 0;
         let currentIndex = 0;
-        let speed = 40; // Tốc độ ban đầu (chạy cực nhanh)
+        let speed = 40;
 
         function rollStep() {
-            // Xóa highlight ô trước
             const prevCard = document.querySelector('.card.active-roll');
             if (prevCard) prevCard.classList.remove('active-roll');
 
@@ -571,7 +883,6 @@
             const remainingSteps = totalSteps - currentStep;
 
             if (activeCard) {
-                // CHỈ KHI RÀ PHANH GẦN DỪNG (còn dưới 10 bước), MỚI BẬT VIỀN SÁNG Ô
                 if (remainingSteps <= 10) {
                     activeCard.classList.add('active-roll');
                 }
@@ -580,7 +891,6 @@
 
             currentStep++;
 
-            // Khi đã chạy xong toàn bộ bước -> DỪNG HẲN Ở WINNER
             if (currentStep > totalSteps) {
                 setTimeout(() => {
                     if (activeCard) {
@@ -591,18 +901,17 @@
                     statusMsg.innerHTML = `Chúc mừng! Diễn viên được chọn: <b style="color: var(--accent); font-size: 16px;">${actorsList[winnerIndex].name}</b>`;
                     rollBtn.disabled = false;
                     isRolling = false;
-                    document.body.classList.remove('is-rolling'); // Hiện lại thanh scrollbar
+                    document.body.classList.remove('is-rolling');
                 }, 220);
                 return;
             }
 
-            // GIA TỐC HÃM PHANH (Chậm dần đều ở những bước cuối)
             if (remainingSteps < 4) {
-                speed += 90; // Rất chậm (nhích từng ô một cách hồi hộp)
+                speed += 90;
             } else if (remainingSteps < 8) {
-                speed += 45; // Bắt đầu thấy rõ từng ô
+                speed += 45;
             } else if (remainingSteps < 15) {
-                speed += 20; // Hơi chậm lại
+                speed += 20;
             }
 
             currentIndex = (currentIndex + 1) % actorsList.length;

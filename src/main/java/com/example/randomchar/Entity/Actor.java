@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Year;
 
 @Entity
 @Table(name = "actors")
@@ -15,8 +16,22 @@ public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    private Integer age;
+
+    private Integer birthYear; // Nhập và lưu năm sinh
+
     private String imageUrl;
 
+    @Column(length = 1000)
+    private String famousCode; // Danh sách code nổi bật
+
+    private String webUrl;     // Link trang web cá nhân/profile
+
+    // Tự động tính tuổi theo năm hiện tại khi chuyển thành JSON (không tạo cột trong DB)
+    @Transient
+    public Integer getAge() {
+        if (birthYear == null || birthYear <= 0) return null;
+        return Year.now().getValue() - birthYear;
+    }
 }
