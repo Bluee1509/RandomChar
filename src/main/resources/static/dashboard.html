@@ -506,6 +506,10 @@
         try {
             const res = await fetch(API_URL);
             actorsData = await res.json();
+
+            // SẮP XẾP CỐ ĐỊNH THEO ID ĐỂ KHÔNG BỊ NHẢY THỨ TỰ KHI SỬA
+            actorsData.sort((a, b) => a.id - b.id);
+
             const tbody = document.getElementById('table-body');
             const badge = document.getElementById('total-badge');
 

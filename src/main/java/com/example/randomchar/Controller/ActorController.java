@@ -21,7 +21,7 @@ public class ActorController {
 
     @GetMapping
     public List<Actor> getAllActors() {
-        return actorRepository.findAll();
+        return actorRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
     }
 
     @GetMapping("/random")
