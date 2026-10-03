@@ -167,6 +167,19 @@
             box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.2);
         }
 
+        /* XÓA BỎ MŨI TÊN TĂNG GIẢM TRÊN CHROME, SAFARI, EDGE, OPERA */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* XÓA BỎ MŨI TÊN TĂNG GIẢM TRÊN FIREFOX */
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
         .calculated-age-hint {
             font-size: 12px;
             color: var(--accent);
@@ -417,7 +430,9 @@
 
             <div class="form-group">
                 <label for="birthYear">Năm sinh</label>
-                <input type="number" id="birthYear" required min="1900" max="2030" placeholder="Ví dụ: 1999" oninput="calculateAgePreview(this.value)">
+                <input type="number" id="birthYear" required min="1900" max="2030" placeholder="Ví dụ: 1999"
+                       oninput="calculateAgePreview(this.value)"
+                       onwheel="event.preventDefault()">
                 <span class="calculated-age-hint" id="age-preview"></span>
             </div>
 
