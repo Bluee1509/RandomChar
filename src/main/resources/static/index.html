@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Character - Vòng Quay May Mắn</title>
+    <link rel="icon" href="data:,">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -36,7 +37,6 @@
             overflow-x: hidden;
         }
 
-        /* Header / Logo */
         header {
             background-color: #12151b;
             border-bottom: 1px solid var(--border-color);
@@ -44,6 +44,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .logo {
@@ -69,7 +70,6 @@
             border-radius: 4px;
         }
 
-        /* Main Container */
         .container {
             max-width: 1400px;
             width: 100%;
@@ -101,7 +101,6 @@
             border-radius: 2px;
         }
 
-        /* Khung Carousel trượt ngang */
         .carousel-wrapper {
             position: relative;
             width: 100%;
@@ -125,7 +124,6 @@
             transition: all 0.2s ease;
         }
 
-        /* Thanh scrollbar mặc định */
         .carousel-container::-webkit-scrollbar {
             height: 8px;
         }
@@ -144,7 +142,6 @@
             background: var(--accent);
         }
 
-        /* TẮT THANH NGANG VÀ NÚT KHI ĐANG QUAY */
         body.is-rolling .carousel-container {
             scrollbar-width: none !important;
             -ms-overflow-style: none !important;
@@ -164,7 +161,6 @@
             pointer-events: none;
         }
 
-        /* Nút trượt trái / phải */
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -199,7 +195,6 @@
             right: -10px;
         }
 
-        /* Thẻ Diễn Viên (Card) */
         .card {
             flex: 0 0 200px;
             background-color: var(--bg-card);
@@ -218,11 +213,11 @@
         .carousel-container:not(.has-overflow) .card:first-child {
             margin-left: auto;
         }
+
         .carousel-container:not(.has-overflow) .card:last-child {
             margin-right: auto;
         }
 
-        /* Hover Card */
         .card:hover {
             transform: translateY(-8px) scale(1.02);
             border-color: var(--accent);
@@ -300,7 +295,6 @@
             margin-top: 3px;
         }
 
-        /* HIỆU ỨNG KHI RÀ PHANH CHẬM */
         .card.active-roll {
             border-color: #ffaa00 !important;
             transform: scale(1.06) translateY(-6px) !important;
@@ -312,13 +306,12 @@
             color: #ffaa00;
         }
 
-        /* Trạng thái trúng thưởng (Winner) */
         .card.winner {
             border-color: var(--accent) !important;
-            transform: scale(1.1) translateY(-6px) !important;
             box-shadow: 0 0 35px var(--accent-glow), 0 0 10px #ffffff !important;
             z-index: 5 !important;
-            animation: pulseGlow 1.2s infinite alternate ease-in-out;
+            animation: pulseGlow 1.2s infinite alternate ease-in-out,
+            winnerShake 0.5s ease-in-out 3;
         }
 
         .card.winner::before {
@@ -347,7 +340,18 @@
             }
         }
 
-        /* Khu vực Nút Random */
+        @keyframes winnerShake {
+            0%, 100% {
+                transform: scale(1.1) translateY(-6px) rotate(0deg);
+            }
+            25% {
+                transform: scale(1.12) translateY(-6px) rotate(-2deg);
+            }
+            75% {
+                transform: scale(1.12) translateY(-6px) rotate(2deg);
+            }
+        }
+
         .action-area {
             display: flex;
             flex-direction: column;
@@ -393,7 +397,6 @@
             min-height: 20px;
         }
 
-        /* --- POPUP / MODAL CHI TIẾT DIỄN VIÊN TỰ ĐỘNG SCALE --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -534,7 +537,6 @@
             font-weight: 600;
         }
 
-        /* KHUNG CHỨA CÁC MÃ CODE */
         .codes-wrapper {
             display: flex;
             flex-wrap: wrap;
@@ -585,64 +587,124 @@
             box-shadow: 0 4px 14px rgba(255, 119, 0, 0.4);
         }
 
-        /* Responsive Mobile */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .btn-sound {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #212631;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-sound:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .btn-sound.muted {
+            opacity: 0.5;
+        }
+
         @media (max-width: 640px) {
             header {
                 padding: 12px 16px;
             }
+
             .container {
                 padding: 20px 10px;
             }
+
             .nav-arrow {
                 display: none !important;
             }
+
             .card {
                 flex: 0 0 155px;
             }
+
             .carousel-container {
                 padding: 20px 10px 25px;
                 gap: 16px;
             }
+
             .btn-random {
                 padding: 14px 32px;
                 font-size: 16px;
             }
+
             .modal-body {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
                 padding: 20px 16px;
             }
+
             .modal-avatar {
                 width: 120px;
                 height: 160px;
             }
+
             .modal-name {
                 margin: 0 auto;
             }
+
             .info-row {
                 flex-direction: column;
                 align-items: center;
                 gap: 4px;
             }
+
             .info-label {
                 width: auto;
             }
+
             .codes-wrapper {
                 justify-content: center;
             }
+
             .modal-footer {
                 justify-content: center;
+            }
+
+            .btn-sound {
+                right: 12px;
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
             }
         }
     </style>
 </head>
 <body>
 
+<canvas id="confetti-canvas"></canvas>
+
 <header>
     <div class="logo" onclick="location.reload()" title="Tải lại trang chủ">
         RANDOM<span>CHAR</span>
     </div>
+    <button class="btn-sound" id="btn-sound" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
 </header>
 
 <div class="container">
@@ -658,11 +720,11 @@
         <button class="btn-random" id="btn-roll" onclick="startRandomRoll()">
             <span>🎲</span> Bắt Đầu Quay
         </button>
-        <div class="status-text" id="status-msg">Nhấn nút để chọn ngẫu nhiên diễn viên may mắn</div>
+        <div class="status-text" id="status-msg">Nhấn nút hoặc phím <b style="color: var(--accent);">SPACE</b> để quay
+        </div>
     </div>
 </div>
 
-<!-- POPUP MODAL CHI TIẾT TỰ ĐỘNG SCALE -->
 <div class="modal-overlay" id="actor-modal" onclick="handleBackdropClick(event)">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal()" title="Đóng">✕</button>
@@ -682,9 +744,7 @@
                 </div>
                 <div class="info-row" style="align-items: flex-start;">
                     <span class="info-label" style="margin-top: 3px;">Code nổi bật:</span>
-                    <div class="codes-wrapper" id="modal-codes-container">
-                        <!-- Tự động sinh các tag code tại đây -->
-                    </div>
+                    <div class="codes-wrapper" id="modal-codes-container"></div>
                 </div>
             </div>
         </div>
@@ -702,6 +762,158 @@
     let isRolling = false;
     const currentYear = new Date().getFullYear();
 
+    // ============================================================
+    // ===== ÂM THANH (Web Audio API — không cần file mp3) ======
+    // ============================================================
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    }
+
+    // Tiếng "tick" kiểu roulette/game show
+    function playTick() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, now);
+
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+            osc.start(now);
+            osc.stop(now + 0.05);
+        } catch (e) { /* bỏ qua */ }
+    }
+
+    function playWin() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.4);
+                osc.start(ctx.currentTime + i * 0.12);
+                osc.stop(ctx.currentTime + i * 0.12 + 0.5);
+            });
+        } catch (e) { /* bỏ qua */
+        }
+    }
+
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        const btn = document.getElementById('btn-sound');
+        btn.innerText = soundEnabled ? '🔊' : '🔇';
+        btn.classList.toggle('muted', !soundEnabled);
+        if (soundEnabled) playTick();
+    }
+
+    // ============================================================
+    // ===== CONFETTI (tự viết, không cần thư viện) ==============
+    // ============================================================
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiParticles = [];
+    let confettiAnimating = false;
+
+    function resizeConfettiCanvas() {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeConfettiCanvas);
+    resizeConfettiCanvas();
+
+    const CONFETTI_COLORS = ['#ff7700', '#ff4d00', '#ffaa00', '#ffffff', '#ff3b00', '#ffcc00'];
+
+    function launchConfetti() {
+        for (let side = 0; side < 2; side++) {
+            const originX = side === 0 ? 0 : confettiCanvas.width;
+            const directionX = side === 0 ? 1 : -1;
+            for (let i = 0; i < 80; i++) {
+                confettiParticles.push({
+                    x: originX,
+                    y: confettiCanvas.height * 0.6,
+                    vx: directionX * (3 + Math.random() * 4),
+                    vy: -8 - Math.random() * 6,
+                    size: 6 + Math.random() * 6,
+                    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.3,
+                    life: 1.0,
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                });
+            }
+        }
+        if (!confettiAnimating) {
+            confettiAnimating = true;
+            requestAnimationFrame(updateConfetti);
+        }
+    }
+
+    function updateConfetti() {
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+        confettiParticles.forEach(p => {
+            p.vy += 0.25;
+            p.vx *= 0.99;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rotation += p.rotationSpeed;
+            p.life -= 0.008;
+
+            confettiCtx.save();
+            confettiCtx.globalAlpha = Math.max(0, p.life);
+            confettiCtx.translate(p.x, p.y);
+            confettiCtx.rotate(p.rotation);
+            confettiCtx.fillStyle = p.color;
+
+            if (p.shape === 'rect') {
+                confettiCtx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+            } else {
+                confettiCtx.beginPath();
+                confettiCtx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                confettiCtx.fill();
+            }
+            confettiCtx.restore();
+        });
+
+        confettiParticles = confettiParticles.filter(
+            p => p.life > 0 && p.y < confettiCanvas.height + 50
+        );
+
+        if (confettiParticles.length > 0) {
+            requestAnimationFrame(updateConfetti);
+        } else {
+            confettiAnimating = false;
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        }
+    }
+
+    // ============================================================
+    // ===== CÁC HÀM CHÍNH =======================================
+    // ============================================================
     function checkOverflow() {
         const carousel = document.getElementById('carousel');
         const prevBtn = document.getElementById('arrow-prev');
@@ -719,7 +931,6 @@
         }
     }
 
-    // 1. Tải danh sách diễn viên (Hiển thị tuổi tự tính từ birthYear)
     async function loadActors() {
         try {
             const res = await fetch(API_URL);
@@ -737,7 +948,6 @@
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
             actorsList.forEach((actor, index) => {
-                // Ưu tiên tuổi do Backend tính, nếu không thì lấy năm hiện tại trừ năm sinh
                 const calculatedAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : '---');
 
                 carousel.innerHTML += `
@@ -772,7 +982,6 @@
         }
     }
 
-    // 2. Mở Popup chi tiết (Tự tính tuổi từ Năm sinh)
     function openModal(index) {
         if (isRolling) return;
 
@@ -782,7 +991,6 @@
         const birthYear = actor.birthYear ? actor.birthYear : 'Chưa cập nhật';
         const displayAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : 'Chưa rõ');
 
-        // Tách chuỗi code nếu có nhiều mã
         const rawCode = actor.famousCode || actor.code || '';
         const codesContainer = document.getElementById('modal-codes-container');
         codesContainer.innerHTML = '';
@@ -799,7 +1007,6 @@
             codesContainer.innerHTML = '<span style="color: var(--text-sub); font-size: 13px;">Chưa cập nhật</span>';
         }
 
-        // Link dẫn tới web profile
         const webUrl = (actor.webUrl && actor.webUrl.trim().length > 0)
             ? actor.webUrl.trim()
             : `https://www.google.com/search?q=${encodeURIComponent(actor.name)}`;
@@ -831,13 +1038,11 @@
         if (e.key === 'Escape') closeModal();
     });
 
-    // 3. Cuộn bằng nút mũi tên
     function scrollCarousel(direction) {
         const container = document.getElementById('carousel');
         container.scrollBy({left: direction * 420, behavior: 'smooth'});
     }
 
-    // 4. Vòng quay Roulette
     async function startRandomRoll() {
         if (isRolling || actorsList.length === 0) return;
 
@@ -885,8 +1090,10 @@
             if (activeCard) {
                 if (remainingSteps <= 10) {
                     activeCard.classList.add('active-roll');
+                    playTick();
                 }
-                activeCard.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
+                const scrollBehavior = remainingSteps <= 3 ? 'smooth' : 'instant';
+                activeCard.scrollIntoView({behavior: scrollBehavior, block: 'nearest', inline: 'center'});
             }
 
             currentStep++;
@@ -902,6 +1109,9 @@
                     rollBtn.disabled = false;
                     isRolling = false;
                     document.body.classList.remove('is-rolling');
+
+                    playWin();
+                    launchConfetti();
                 }, 220);
                 return;
             }
@@ -922,6 +1132,16 @@
     }
 
     loadActors();
+
+    document.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if ((e.code === 'Space' || e.code === 'Enter') && !isRolling) {
+            e.preventDefault();
+            startRandomRoll();
+        }
+    });
 </script>
 </body>
 </html>
