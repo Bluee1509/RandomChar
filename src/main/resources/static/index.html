@@ -625,7 +625,73 @@
         .btn-sound.muted {
             opacity: 0.5;
         }
+        /* ===== SKELETON LOADING ===== */
+        .skeleton-card {
+            flex: 0 0 200px;
+            background-color: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
 
+        .skeleton-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-top: 140%;
+            background: linear-gradient(
+                    90deg,
+                    #1a1e26 0%,
+                    #232832 50%,
+                    #1a1e26 100%
+            );
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.4s ease-in-out infinite;
+        }
+
+        .skeleton-info {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skeleton-line {
+            height: 14px;
+            border-radius: 4px;
+            background: linear-gradient(
+                    90deg,
+                    #1a1e26 0%,
+                    #232832 50%,
+                    #1a1e26 100%
+            );
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.4s ease-in-out infinite;
+        }
+
+        .skeleton-line.name {
+            width: 75%;
+            height: 16px;
+        }
+
+        .skeleton-line.role {
+            width: 45%;
+            height: 11px;
+        }
+
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (max-width: 640px) {
+            .skeleton-card {
+                flex: 0 0 155px;
+            }
+        }
         @media (max-width: 640px) {
             header {
                 padding: 12px 16px;
@@ -914,6 +980,50 @@
     // ============================================================
     // ===== CÁC HÀM CHÍNH =======================================
     // ============================================================
+    // ============================================================
+    // ===== SKELETON LOADING ====================================
+    // ============================================================
+    function showSkeleton(count = 6) {
+        const carousel = document.getElementById('carousel');
+        carousel.innerHTML = '';
+
+        for (let i = 0; i < count; i++) {
+            carousel.innerHTML += `
+                <div class="skeleton-card">
+                    <div class="skeleton-thumbnail"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-line name"></div>
+                        <div class="skeleton-line role"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Ẩn nav arrow khi đang loading
+        document.getElementById('arrow-prev').style.display = 'none';
+        document.getElementById('arrow-next').style.display = 'none';
+
+        // Disable nút quay
+        const rollBtn = document.getElementById('btn-roll');
+        if (rollBtn) rollBtn.disabled = true;
+
+        // Đổi status text
+        const statusMsg = document.getElementById('status-msg');
+        if (statusMsg) statusMsg.innerText = 'Đang tải danh sách diễn viên...';
+    }
+
+    function hideSkeleton() {
+        // Sau khi loadActors() xong, hàm này chỉ cần đảm bảo
+        // các element UI được khôi phục
+        const rollBtn = document.getElementById('btn-roll');
+        if (rollBtn) rollBtn.disabled = false;
+
+        const statusMsg = document.getElementById('status-msg');
+        if (statusMsg) {
+            statusMsg.innerHTML =
+                'Nhấn nút hoặc phím <b style="color: var(--accent);">SPACE</b> để quay';
+        }
+    }
     function checkOverflow() {
         const carousel = document.getElementById('carousel');
         const prevBtn = document.getElementById('arrow-prev');
@@ -932,6 +1042,7 @@
     }
 
     async function loadActors() {
+        showSkeleton(6);
         try {
             const res = await fetch(API_URL);
             actorsList = await res.json();
@@ -941,7 +1052,9 @@
             if (!actorsList || actorsList.length === 0) {
                 carousel.innerHTML = '<div style="color: var(--text-sub); padding: 40px; margin: auto;">Chưa có diễn viên nào trong cơ sở dữ liệu. Hãy thêm từ Dashboard!</div>';
                 document.getElementById('btn-roll').disabled = true;
+                document.getElementById('status-msg').innerText = 'Chưa có dữ liệu để quay';
                 checkOverflow();
+                hideSkeleton();   // 👈 THÊM
                 return;
             }
 
@@ -975,10 +1088,12 @@
                 if (middleCard && carousel.scrollWidth > carousel.clientWidth) {
                     middleCard.scrollIntoView({behavior: 'instant', block: 'nearest', inline: 'center'});
                 }
+                hideSkeleton();
             }, 60);
 
         } catch (err) {
             console.error("Lỗi khi tải dữ liệu:", err);
+            hideSkeleton();
         }
     }
 
