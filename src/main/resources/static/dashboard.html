@@ -169,8 +169,7 @@
             box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.2);
         }
 
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
@@ -294,8 +293,7 @@
             vertical-align: middle;
         }
 
-        th:nth-child(2), td:nth-child(2),
-        th:nth-child(4), td:nth-child(4) {
+        th:nth-child(2), td:nth-child(2), th:nth-child(4), td:nth-child(4) {
             text-align: center;
         }
 
@@ -601,19 +599,13 @@
 <body>
 
 <header>
-    <div class="logo">
-        RANDOM<span>CHAR</span>
-    </div>
-    <a href="/" class="nav-btn">
-        <span>🌐</span> Xem Trang Chủ
-    </a>
+    <div class="logo">RANDOM<span>CHAR</span></div>
+    <a href="/" class="nav-btn"><span>🌐</span> Xem Trang Chủ</a>
 </header>
 
 <div class="container">
-    <!-- Cột Trái: Form Thêm / Sửa -->
     <div class="panel-card">
         <h2 class="panel-title" id="form-heading">Thêm Diễn Viên Mới</h2>
-
         <form id="actor-form" onsubmit="saveActor(event)">
             <input type="hidden" id="actor-id">
 
@@ -621,36 +613,29 @@
                 <label for="name">Tên diễn viên</label>
                 <input type="text" id="name" required placeholder="Ví dụ: Sora Aoi">
             </div>
-
             <div class="form-group">
                 <label for="birthYear">Năm sinh</label>
                 <input type="number" id="birthYear" required min="1900" max="2050" placeholder="Ví dụ: 1999"
-                       oninput="calculateAgePreview(this.value)"
-                       onwheel="event.preventDefault()"
+                       oninput="calculateAgePreview(this.value)" onwheel="event.preventDefault()"
                        onkeydown="if(['e', 'E', '+', '-', '.'].includes(event.key)) event.preventDefault();">
                 <span class="calculated-age-hint" id="age-preview"></span>
             </div>
-
             <div class="form-group">
                 <label for="imageUrl">Link ảnh đại diện (URL)</label>
                 <input type="url" id="imageUrl" required placeholder="https://..." oninput="updatePreview(this.value)">
             </div>
-
             <div class="preview-box" id="preview-box">
                 <img id="preview-img" src="" alt="Preview">
                 <span class="preview-placeholder" id="preview-text">🖼️ Xem trước hình ảnh tại đây</span>
             </div>
-
             <div class="form-group">
                 <label for="famousCode">Code nổi bật (cách nhau bởi dấu phẩy)</label>
                 <input type="text" id="famousCode" placeholder="Ví dụ: SSIS-888, MIDE-123">
             </div>
-
             <div class="form-group">
                 <label for="webUrl">Link Website / Profile</label>
                 <input type="url" id="webUrl" placeholder="https://...">
             </div>
-
             <div class="btn-actions-group">
                 <button type="submit" class="btn-submit" id="btn-submit-form">➕ Lưu Vào Database</button>
                 <button type="button" class="btn-cancel" id="btn-cancel-edit" onclick="resetToCreateMode()">❌ Hủy Chỉnh
@@ -660,13 +645,11 @@
         </form>
     </div>
 
-    <!-- Cột Phải: Bảng Danh Sách -->
     <div class="panel-card">
         <div class="panel-title">
             <span>Danh Sách Quản Lý</span>
             <span class="counter-badge" id="total-badge">0 Diễn viên</span>
         </div>
-
         <div class="table-responsive">
             <table>
                 <thead>
@@ -684,16 +667,12 @@
     </div>
 </div>
 
-<!-- Container chứa các Toast -->
 <div id="toast-container"></div>
 
-<!-- Modal xác nhận xóa -->
 <div class="confirm-modal" id="confirm-modal">
     <div class="confirm-box">
         <div class="confirm-title">Xác nhận xóa</div>
-        <div class="confirm-msg" id="confirm-msg">Bạn có chắc chắn muốn xóa diễn viên này? Hành động này không thể hoàn
-            tác.
-        </div>
+        <div class="confirm-msg" id="confirm-msg">Bạn có chắc chắn muốn xóa diễn viên này?</div>
         <div class="confirm-actions">
             <button class="btn-confirm-cancel" onclick="closeConfirm()">Hủy</button>
             <button class="btn-confirm-ok" id="btn-confirm-ok">Xóa ngay</button>
@@ -707,31 +686,21 @@
     const currentYear = new Date().getFullYear();
     let deleteTargetId = null;
 
-    // ==========================================
-    // TOAST NOTIFICATION
-    // ==========================================
     function showToast(message, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
-
         let icon = '✅';
         if (type === 'error') icon = '❌';
         if (type === 'info') icon = 'ℹ️';
-
         toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
         container.appendChild(toast);
-
-        // Tự động xóa sau 3s
         setTimeout(() => {
             toast.classList.add('hiding');
             toast.addEventListener('animationend', () => toast.remove());
         }, 3000);
     }
 
-    // ==========================================
-    // CONFIRM MODAL
-    // ==========================================
     function showConfirm(id, name) {
         deleteTargetId = id;
         document.getElementById('confirm-msg').innerHTML =
@@ -770,9 +739,6 @@
         }
     });
 
-    // ==========================================
-    // CÁC HÀM CHÍNH
-    // ==========================================
     function calculateAgePreview(yearVal) {
         const hint = document.getElementById('age-preview');
         const year = parseInt(yearVal);
@@ -788,8 +754,8 @@
             const res = await fetch(API_URL);
             actorsData = await res.json();
 
-            // SẮP XẾP CỐ ĐỊNH THEO ID ĐỂ KHÔNG BỊ NHẢY THỨ TỰ KHI SỬA
-            actorsData.sort((a, b) => a.id - b.id);
+            // ĐÃ SỬA: Sắp xếp theo thời gian tạo (createdAt) thay vì ID
+            actorsData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
             const tbody = document.getElementById('table-body');
             const badge = document.getElementById('total-badge');
@@ -815,19 +781,16 @@
                     if (codes.length > 3) codesHtml += `<span style="font-size:11px;color:var(--text-sub)">+${codes.length - 3}</span>`;
                 }
 
-                // Xử lý an toàn nếu ảnh bị lỗi
                 const safeImgUrl = actor.imageUrl && actor.imageUrl.trim() !== '' ? actor.imageUrl : fallbackImg;
-                // Xử lý an toàn nếu tên có dấu nháy đơn (ví dụ: O'Neil)
                 const safeName = actor.name.replace(/'/g, "\\'");
 
+                // ĐÃ SỬA: Thêm dấu nháy đơn ' ' xung quanh actor.id
                 tbody.innerHTML += `
                     <tr>
                         <td style="color: var(--text-sub); font-weight: 600; text-align: center;">#${index + 1}</td>
                         <td>
                             <div class="thumb-cell">
-                                <img src="${safeImgUrl}"
-                                     alt="${actor.name}"
-                                     onerror="this.onerror=null; this.src='${fallbackImg}';">
+                                <img src="${safeImgUrl}" alt="${actor.name}" onerror="this.onerror=null; this.src='${fallbackImg}';">
                             </div>
                         </td>
                         <td>
@@ -839,8 +802,8 @@
                         </td>
                         <td>
                             <div class="action-btns">
-                                <button class="btn-edit" onclick="startEdit(${actor.id})">✏️ Sửa</button>
-                                <button class="btn-del" onclick="deleteActor(${actor.id}, '${safeName}')">🗑 Xóa</button>
+                                <button class="btn-edit" onclick="startEdit('${actor.id}')">✏️ Sửa</button>
+                                <button class="btn-del" onclick="deleteActor('${actor.id}', '${safeName}')">🗑 Xóa</button>
                             </div>
                         </td>
                     </tr>
@@ -878,7 +841,8 @@
     }
 
     function startEdit(id) {
-        const actor = actorsData.find(a => a.id === id);
+        // ĐÃ SỬA: Chuyển cả 2 vế về String để so sánh UUID chính xác
+        const actor = actorsData.find(a => String(a.id) === String(id));
         if (!actor) return;
 
         document.getElementById('actor-id').value = actor.id;

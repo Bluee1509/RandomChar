@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/actors")
@@ -21,7 +22,8 @@ public class ActorController {
 
     @GetMapping
     public List<Actor> getAllActors() {
-        return actorRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
+        // Sắp xếp theo thời gian tạo (cũ nhất ở trên)
+        return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").ascending());
     }
 
     @GetMapping("/random")
@@ -38,7 +40,7 @@ public class ActorController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Actor> patchActor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Actor> patchActor(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         return actorRepository.findById(id).map(actor -> {
             if (updates.containsKey("name") && updates.get("name") != null) {
                 actor.setName(updates.get("name").toString().trim());
@@ -61,7 +63,7 @@ public class ActorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActor(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteActor(@PathVariable UUID id) {
         if (actorRepository.existsById(id)) {
             actorRepository.deleteById(id);
             return ResponseEntity.noContent().build();
