@@ -873,11 +873,32 @@
 
     async function saveActor(e) {
         e.preventDefault();
+
+        const imageUrlValue = document.getElementById('imageUrl').value.trim();
+
+        // 1. Chặn ảnh Base64
+        if (imageUrlValue.startsWith('data:image')) {
+            showToast('Lỗi: Vui lòng dán Link ảnh (URL) thay vì ảnh Base64!', 'error');
+            return;
+        }
+
+        // 2. Chặn Link ảnh quá dài (giới hạn của Database là 255 ký tự)
+        if (imageUrlValue.length > 255) {
+            showToast('Lỗi: Link ảnh quá dài (tối đa 255 ký tự)!', 'error');
+            return;
+        }
+
+        // 3. Kiểm tra định dạng URL hợp lệ (bắt buộc phải bắt đầu bằng http/https)
+        if (!imageUrlValue.startsWith('http://') && !imageUrlValue.startsWith('https://')) {
+            showToast('Lỗi: Link ảnh không hợp lệ (phải bắt đầu bằng http:// hoặc https://)!', 'error');
+            return;
+        }
+
         const id = document.getElementById('actor-id').value;
         const actor = {
             name: document.getElementById('name').value.trim(),
             birthYear: parseInt(document.getElementById('birthYear').value),
-            imageUrl: document.getElementById('imageUrl').value.trim(),
+            imageUrl: imageUrlValue,
             famousCode: document.getElementById('famousCode').value.trim(),
             webUrl: document.getElementById('webUrl').value.trim()
         };
