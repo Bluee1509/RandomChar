@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Quản Lý Diễn Viên</title>
+    <link rel="icon" href="data:,">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,6 +22,7 @@
             --danger-hover: #dc2626;
             --edit: #3b82f6;
             --edit-hover: #2563eb;
+            --success: #10b981;
         }
 
         * {
@@ -167,14 +169,12 @@
             box-shadow: 0 0 0 3px rgba(255, 119, 0, 0.2);
         }
 
-        /* XÓA BỎ MŨI TÊN TĂNG GIẢM TRÊN CHROME, SAFARI, EDGE, OPERA */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* XÓA BỎ MŨI TÊN TĂNG GIẢM TRÊN FIREFOX */
         input[type="number"] {
             -moz-appearance: textfield;
             appearance: textfield;
@@ -393,14 +393,208 @@
             font-size: 14px;
         }
 
+        /* ===== TOAST NOTIFICATION ===== */
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10000;
+        }
+
+        .toast {
+            background: #171a21;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 250px;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastSlideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.info {
+            border-left-color: var(--edit);
+        }
+
+        .toast.hiding {
+            animation: toastSlideOut 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* ===== CONFIRM MODAL ===== */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirm-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .confirm-modal.active .confirm-box {
+            transform: scale(1);
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .confirm-msg {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-confirm-cancel {
+            background: #242933;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .btn-confirm-cancel:hover {
+            background: #2f3542;
+        }
+
+        .btn-confirm-ok {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            flex: 1;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-confirm-ok:hover {
+            background: var(--danger-hover);
+        }
+
         @media (max-width: 640px) {
-            header { padding: 12px 16px; }
-            .container { padding: 15px 10px; gap: 20px; }
-            .panel-card { padding: 16px 12px; }
-            .preview-box { height: 130px; }
-            th, td { padding: 10px 6px; font-size: 13px; }
-            .action-btns { flex-direction: column; gap: 6px; }
-            .btn-edit, .btn-del { padding: 6px 8px; font-size: 12px; width: 100%; }
+            header {
+                padding: 12px 16px;
+            }
+
+            .container {
+                padding: 15px 10px;
+                gap: 20px;
+            }
+
+            .panel-card {
+                padding: 16px 12px;
+            }
+
+            .preview-box {
+                height: 130px;
+            }
+
+            th, td {
+                padding: 10px 6px;
+                font-size: 13px;
+            }
+
+            .action-btns {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .btn-edit, .btn-del {
+                padding: 6px 8px;
+                font-size: 12px;
+                width: 100%;
+            }
+
+            #toast-container {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+            }
+
+            .toast {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -430,9 +624,10 @@
 
             <div class="form-group">
                 <label for="birthYear">Năm sinh</label>
-                <input type="number" id="birthYear" required min="1900" max="2030" placeholder="Ví dụ: 1999"
+                <input type="number" id="birthYear" required min="1900" max="2050" placeholder="Ví dụ: 1999"
                        oninput="calculateAgePreview(this.value)"
-                       onwheel="event.preventDefault()">
+                       onwheel="event.preventDefault()"
+                       onkeydown="if(['e', 'E', '+', '-', '.'].includes(event.key)) event.preventDefault();">
                 <span class="calculated-age-hint" id="age-preview"></span>
             </div>
 
@@ -458,7 +653,9 @@
 
             <div class="btn-actions-group">
                 <button type="submit" class="btn-submit" id="btn-submit-form">➕ Lưu Vào Database</button>
-                <button type="button" class="btn-cancel" id="btn-cancel-edit" onclick="resetToCreateMode()">❌ Hủy Chỉnh Sửa</button>
+                <button type="button" class="btn-cancel" id="btn-cancel-edit" onclick="resetToCreateMode()">❌ Hủy Chỉnh
+                    Sửa
+                </button>
             </div>
         </form>
     </div>
@@ -487,11 +684,95 @@
     </div>
 </div>
 
+<!-- Container chứa các Toast -->
+<div id="toast-container"></div>
+
+<!-- Modal xác nhận xóa -->
+<div class="confirm-modal" id="confirm-modal">
+    <div class="confirm-box">
+        <div class="confirm-title">Xác nhận xóa</div>
+        <div class="confirm-msg" id="confirm-msg">Bạn có chắc chắn muốn xóa diễn viên này? Hành động này không thể hoàn
+            tác.
+        </div>
+        <div class="confirm-actions">
+            <button class="btn-confirm-cancel" onclick="closeConfirm()">Hủy</button>
+            <button class="btn-confirm-ok" id="btn-confirm-ok">Xóa ngay</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const API_URL = '/api/actors';
     let actorsData = [];
     const currentYear = new Date().getFullYear();
+    let deleteTargetId = null;
 
+    // ==========================================
+    // TOAST NOTIFICATION
+    // ==========================================
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+
+        let icon = '✅';
+        if (type === 'error') icon = '❌';
+        if (type === 'info') icon = 'ℹ️';
+
+        toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+        container.appendChild(toast);
+
+        // Tự động xóa sau 3s
+        setTimeout(() => {
+            toast.classList.add('hiding');
+            toast.addEventListener('animationend', () => toast.remove());
+        }, 3000);
+    }
+
+    // ==========================================
+    // CONFIRM MODAL
+    // ==========================================
+    function showConfirm(id, name) {
+        deleteTargetId = id;
+        document.getElementById('confirm-msg').innerHTML =
+            `Bạn có chắc chắn muốn xóa diễn viên <b style="color:var(--text-main)">${name}</b>?<br>Hành động này không thể hoàn tác.`;
+        document.getElementById('confirm-modal').classList.add('active');
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirm-modal').classList.remove('active');
+        deleteTargetId = null;
+    }
+
+    document.getElementById('confirm-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'confirm-modal') closeConfirm();
+    });
+
+    document.getElementById('btn-confirm-ok').addEventListener('click', async () => {
+        if (!deleteTargetId) return;
+        const id = deleteTargetId;
+        closeConfirm();
+
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+            if (res.ok) {
+                if (document.getElementById('actor-id').value == id) {
+                    resetToCreateMode();
+                }
+                showToast('Đã xóa diễn viên thành công!', 'success');
+                loadTable();
+            } else {
+                showToast('Không thể xóa diễn viên này!', 'error');
+            }
+        } catch (err) {
+            console.error("Lỗi xóa:", err);
+            showToast('Lỗi kết nối máy chủ!', 'error');
+        }
+    });
+
+    // ==========================================
+    // CÁC HÀM CHÍNH
+    // ==========================================
     function calculateAgePreview(yearVal) {
         const hint = document.getElementById('age-preview');
         const year = parseInt(yearVal);
@@ -534,12 +815,19 @@
                     if (codes.length > 3) codesHtml += `<span style="font-size:11px;color:var(--text-sub)">+${codes.length - 3}</span>`;
                 }
 
+                // Xử lý an toàn nếu ảnh bị lỗi
+                const safeImgUrl = actor.imageUrl && actor.imageUrl.trim() !== '' ? actor.imageUrl : fallbackImg;
+                // Xử lý an toàn nếu tên có dấu nháy đơn (ví dụ: O'Neil)
+                const safeName = actor.name.replace(/'/g, "\\'");
+
                 tbody.innerHTML += `
                     <tr>
                         <td style="color: var(--text-sub); font-weight: 600; text-align: center;">#${index + 1}</td>
                         <td>
                             <div class="thumb-cell">
-                                <img src="${actor.imageUrl || fallbackImg}" alt="${actor.name}" onerror="this.src='${fallbackImg}'">
+                                <img src="${safeImgUrl}"
+                                     alt="${actor.name}"
+                                     onerror="this.onerror=null; this.src='${fallbackImg}';">
                             </div>
                         </td>
                         <td>
@@ -552,7 +840,7 @@
                         <td>
                             <div class="action-btns">
                                 <button class="btn-edit" onclick="startEdit(${actor.id})">✏️ Sửa</button>
-                                <button class="btn-del" onclick="deleteActor(${actor.id})">🗑 Xóa</button>
+                                <button class="btn-del" onclick="deleteActor(${actor.id}, '${safeName}')">🗑 Xóa</button>
                             </div>
                         </td>
                     </tr>
@@ -560,6 +848,7 @@
             });
         } catch (err) {
             console.error("Lỗi khi tải bảng:", err);
+            showToast("Lỗi khi tải danh sách diễn viên", "error");
         }
     }
 
@@ -605,7 +894,7 @@
         document.getElementById('btn-cancel-edit').style.display = 'block';
 
         updatePreview(actor.imageUrl || '');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function resetToCreateMode() {
@@ -643,31 +932,18 @@
             if (res.ok) {
                 resetToCreateMode();
                 loadTable();
+                showToast(isEditing ? 'Đã cập nhật diễn viên!' : 'Đã thêm diễn viên mới!', 'success');
             } else {
-                alert(isEditing ? 'Lỗi khi cập nhật diễn viên!' : 'Lỗi khi thêm diễn viên vào hệ thống!');
+                showToast(isEditing ? 'Lỗi khi cập nhật diễn viên!' : 'Lỗi khi thêm diễn viên!', 'error');
             }
         } catch (err) {
             console.error("Lỗi kết nối:", err);
-            alert('Không thể kết nối đến máy chủ!');
+            showToast('Không thể kết nối đến máy chủ!', 'error');
         }
     }
 
-    async function deleteActor(id) {
-        if (confirm(`Bạn có chắc chắn muốn xóa diễn viên này?`)) {
-            try {
-                const res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
-                if (res.ok) {
-                    if (document.getElementById('actor-id').value == id) {
-                        resetToCreateMode();
-                    }
-                    loadTable();
-                } else {
-                    alert('Không thể xóa diễn viên này!');
-                }
-            } catch (err) {
-                console.error("Lỗi xóa:", err);
-            }
-        }
+    function deleteActor(id, name) {
+        showConfirm(id, name);
     }
 
     loadTable();
