@@ -18,6 +18,8 @@
             --text-main: #ffffff;
             --text-sub: #9ca3af;
             --border-color: #272c38;
+            /* Card tự co theo chiều cao màn hình để cả trang vừa 1 màn, không phải cuộn */
+            --card-w: clamp(120px, calc((100dvh - 380px) / 1.4), 220px);
         }
 
         * {
@@ -32,6 +34,7 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
@@ -40,7 +43,7 @@
         header {
             background-color: #12151b;
             border-bottom: 1px solid var(--border-color);
-            padding: 16px 32px;
+            padding: 12px 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -74,18 +77,20 @@
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 16px 20px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
 
         .section-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            margin-bottom: 24px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -104,7 +109,7 @@
         .carousel-wrapper {
             position: relative;
             width: 100%;
-            margin-bottom: 45px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -115,7 +120,7 @@
             gap: 24px;
             overflow-x: auto;
             scroll-behavior: smooth;
-            padding: 30px 20px 35px;
+            padding: 32px 20px 28px;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) #1a1e26;
             width: 100%;
@@ -142,14 +147,24 @@
             background: var(--accent);
         }
 
+        /* Giữ nguyên chỗ của scrollbar, chỉ làm trong suốt -> không bị nhảy layout khi quay */
         body.is-rolling .carousel-container {
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
+            scrollbar-color: transparent transparent !important;
         }
 
-        body.is-rolling .carousel-container::-webkit-scrollbar {
-            display: none !important;
-            height: 0 !important;
+        body.is-rolling .carousel-container::-webkit-scrollbar-thumb,
+        body.is-rolling .carousel-container::-webkit-scrollbar-track {
+            background: transparent !important;
+        }
+
+        /* Ẩn thanh cuộn dọc bên phải của trang (vẫn cuộn được bằng chuột) */
+        html {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
         }
 
         body.is-rolling .nav-arrow {
@@ -159,6 +174,7 @@
 
         body.is-rolling .card {
             pointer-events: none;
+            transition: none !important;
         }
 
         .nav-arrow {
@@ -196,7 +212,7 @@
         }
 
         .card {
-            flex: 0 0 200px;
+            flex: 0 0 var(--card-w);
             background-color: var(--bg-card);
             border: 2px solid var(--border-color);
             border-radius: 12px;
@@ -353,15 +369,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 6px;
         }
 
         .btn-random {
             background: linear-gradient(135deg, var(--accent) 0%, #ff4d00 100%);
             color: #fff;
             border: none;
-            padding: 16px 45px;
+            padding: 14px 45px;
             font-size: 18px;
             font-weight: 800;
             text-transform: uppercase;
@@ -625,7 +641,7 @@
 
         /* ===== SKELETON LOADING ===== */
         .skeleton-card {
-            flex: 0 0 200px;
+            flex: 0 0 var(--card-w);
             background-color: var(--bg-card);
             border: 2px solid var(--border-color);
             border-radius: 12px;
@@ -684,20 +700,21 @@
                 padding: 12px 16px;
             }
 
+            :root {
+                --card-w: clamp(120px, calc((100dvh - 360px) / 1.4), 160px);
+            }
+
             .container {
-                padding: 20px 10px;
+                padding: 12px 10px;
             }
 
             .nav-arrow {
                 display: none !important;
             }
 
-            .card {
-                flex: 0 0 155px;
-            }
 
             .carousel-container {
-                padding: 20px 10px 25px;
+                padding: 28px 10px 24px;
                 gap: 16px;
             }
 
@@ -747,9 +764,6 @@
                 font-size: 16px;
             }
 
-            .skeleton-card {
-                flex: 0 0 155px;
-            }
         }
     </style>
 </head>
@@ -1151,6 +1165,15 @@
         container.scrollBy({left: direction * 420, behavior: 'smooth'});
     }
 
+    // Căn giữa 1 card theo chiều ngang trong carousel, không làm cuộn trang theo chiều dọc
+    function centerCard(card, behavior) {
+        const c = document.getElementById('carousel');
+        const cRect = c.getBoundingClientRect();
+        const rect = card.getBoundingClientRect();
+        const left = c.scrollLeft + (rect.left - cRect.left) - (c.clientWidth - rect.width) / 2;
+        c.scrollTo({left: Math.max(0, left), behavior});
+    }
+
     async function startRandomRoll() {
         if (isRolling || actorsList.length === 0) return;
 
@@ -1201,8 +1224,7 @@
                     activeCard.classList.add('active-roll');
                     playTick();
                 }
-                const scrollBehavior = remainingSteps <= 3 ? 'smooth' : 'instant';
-                activeCard.scrollIntoView({behavior: scrollBehavior, block: 'nearest', inline: 'center'});
+                centerCard(activeCard, 'instant');
             }
 
             currentStep++;
@@ -1212,7 +1234,7 @@
                     if (activeCard) {
                         activeCard.classList.remove('active-roll');
                         activeCard.classList.add('winner');
-                        activeCard.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'center'});
+                        centerCard(activeCard, 'smooth');
                     }
                     statusMsg.innerHTML = `Chúc mừng! Diễn viên được chọn: <b style="color: var(--accent); font-size: 16px;">${actorsList[winnerIndex].name}</b>`;
                     rollBtn.disabled = false;
