@@ -1067,10 +1067,11 @@
 
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
+            let cardsHtml = '';
             actorsList.forEach((actor, index) => {
                 const calculatedAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : '---');
 
-                carousel.innerHTML += `
+                cardsHtml += `
                     <div class="card" id="card-${index}" onclick="openModal(${index})">
                         <div class="card-thumbnail">
                             <img src="${actor.imageUrl || fallbackImg}"
@@ -1085,16 +1086,17 @@
                     </div>
                 `;
             });
+            carousel.innerHTML = cardsHtml;
 
             checkOverflow();
-            window.addEventListener('resize', checkOverflow);
+            window.addEventListener('resize', () => {
+                checkOverflow();
+                if (!isRolling) centerCarousel();
+            });
 
             setTimeout(() => {
-                const middleIndex = Math.floor(actorsList.length / 2);
-                const middleCard = document.getElementById(`card-${middleIndex}`);
-                if (middleCard && carousel.scrollWidth > carousel.clientWidth) {
-                    middleCard.scrollIntoView({behavior: 'instant', block: 'nearest', inline: 'center'});
-                }
+                // Căn giữa chính xác toàn bộ danh sách -> thanh cuộn màu cam nằm đúng giữa
+                centerCarousel();
                 hideSkeleton();
             }, 60);
 
@@ -1162,7 +1164,12 @@
 
     function scrollCarousel(direction) {
         const container = document.getElementById('carousel');
-        container.scrollBy({left: direction * 420, behavior: 'smooth'});
+        container.scrollBy({left: direction * container.clientWidth * 0.8, behavior: 'smooth'});
+    }
+
+    function centerCarousel() {
+        const c = document.getElementById('carousel');
+        c.scrollTo({left: Math.max(0, (c.scrollWidth - c.clientWidth) / 2), behavior: 'instant'});
     }
 
     // Căn giữa 1 card theo chiều ngang trong carousel, không làm cuộn trang theo chiều dọc
@@ -1205,11 +1212,22 @@
             winnerIndex = Math.floor(Math.random() * actorsList.length);
         }
 
-        const fullRounds = actorsList.length > 5 ? 4 : 6;
-        const totalSteps = (fullRounds * actorsList.length) + winnerIndex;
+        const n = actorsList.length;
+        let totalSteps, startIndex;
+        if (n <= 12) {
+            // Danh sách ngắn: quay vài vòng như cũ
+            const fullRounds = n > 5 ? 4 : 6;
+            totalSteps = (fullRounds * n) + winnerIndex;
+            startIndex = 0;
+        } else {
+            // Danh sách dài: luôn ~48 bước (thời gian quay không phụ thuộc số lượng),
+            // bắt đầu từ vị trí lùi lại sao cho bước cuối rơi đúng vào winner
+            totalSteps = 48;
+            startIndex = (((winnerIndex - totalSteps) % n) + n) % n;
+        }
 
         let currentStep = 0;
-        let currentIndex = 0;
+        let currentIndex = startIndex;
         let speed = 40;
 
         function rollStep() {
