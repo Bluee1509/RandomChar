@@ -10,19 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main:  #0a0a0a; /* Đen xám dịu mắt */
-            --bg-card: #141414; /* Xám đen cho thẻ */
-            --bg-input: #ffffff; /* Nền trắng cho thanh tìm kiếm */
+            --bg-main: #0a0a0a;
+            --bg-card: #141414;
+            --bg-input: #ffffff;
             --accent: #ff3366;
-            --accent-hover: #ff5c85; /* Hồng sáng khi hover */
-            --accent-glow: rgba(255, 51, 102, 0.6); /* Hồng phát sáng */
-            --text-main: #ffffff; /* Trắng tinh */
-            --text-sub: #9ca3af; /* Xám mờ */
-            --text-input: #000000; /* Chữ đen trong ô search */
-            --border-color: #222222; /* Viền xám tối */
+            --accent-hover: #ff5c85;
+            --accent-glow: rgba(255, 51, 102, 0.6);
+            --text-main: #ffffff;
+            --text-sub: #9ca3af;
+            --text-input: #000000;
+            --border-color: #222222;
 
-            /* Card tự động co giãn để vừa 1 màn hình */
-            --card-w: clamp(120px, calc((100dvh - 260px) / 1.4), 220px);
+            /*
+             * TỰ ĐỘNG THU PHÓNG (FLUID SCALING):
+             * Lấy giá trị NHỎ NHẤT giữa:
+             * 1. 18% chiều rộng màn hình (vw)
+             * 2. (Chiều cao màn hình - 250px) / 1.4 (dvh)
+             * Giới hạn trong khoảng từ 140px đến 450px để không bị quá bé (trên mobile) hoặc quá khổng lồ (trên 4K).
+             */
+            --card-w: clamp(140px, min(16vw, calc((100dvh - 250px) / 1.45)), 380px);
         }
 
         * {
@@ -40,7 +46,7 @@
             height: 100dvh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Khóa cuộn dọc */
         }
 
         /* HEADER */
@@ -64,22 +70,18 @@
             gap: 4px;
             cursor: pointer;
             color: #fff;
-            /* THÊM BO VIỀN Ở ĐÂY */
-            border: 1.5px solid var(--accent); /* Viền màu hồng */
-            padding: 4px 12px;                 /* Tạo khoảng trống bên trong */
-            border-radius: 4px;                /* Bo góc nhẹ */
+            border: 1.5px solid var(--accent);
+            padding: 4px 12px;
+            border-radius: 4px;
             transition: all 0.3s ease;
         }
 
-        /* Thêm hiệu ứng phát sáng khi rê chuột vào logo */
         .logo:hover {
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
         .logo span {
             color: var(--accent);
-            padding: 0;
-            background: none;
             font-size: 26px;
         }
 
@@ -103,7 +105,7 @@
             width: 100%;
             padding: 8px 16px 8px 36px;
             background: var(--bg-input);
-            border: 1px solid transparent; /* Ẩn viền cũ */
+            border: 1px solid transparent;
             border-radius: 2px;
             color: var(--text-input);
             font-size: 14px;
@@ -112,7 +114,7 @@
         }
 
         .search-box:hover input {
-            border-color: var(--accent); /* Hiện viền hồng khi rê chuột */
+            border-color: var(--accent);
         }
 
         .search-box input::placeholder {
@@ -120,7 +122,7 @@
         }
 
         .search-box:focus-within input {
-            box-shadow: 0 0 0 2px var(--accent); /* Viền hồng khi click */
+            box-shadow: 0 0 0 2px var(--accent);
         }
 
         .search-icon {
@@ -158,7 +160,7 @@
 
         /* CONTAINER CHÍNH */
         .container {
-            max-width: 1400px;
+            max-width: 1600px; /* Tăng lên 1600px để bung xõa hết màn Full HD */
             width: 100%;
             margin: 0 auto;
             padding: 10px 20px;
@@ -167,6 +169,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 20px; /* Khoảng cách giữa carousel và nút */
             min-height: 0;
         }
 
@@ -174,26 +177,25 @@
             position: relative;
             width: 100%;
             background: radial-gradient(circle at center, rgba(255, 51, 102, 0.05) 0%, transparent 60%);
-            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1;
+            flex: 1; /* Cho phép khung này lấp đầy không gian trống */
             min-height: 0;
         }
 
-        /* PADDING ĐỂ BÓNG ĐỔ KHÔNG BỊ CẮT */
         .carousel-container {
             display: flex;
-            gap: 16px;
+            gap: clamp(16px, 1.5vw, 36px); /* Khoảng cách thẻ tự động giãn ra trên màn to */
             overflow-x: auto;
             scroll-behavior: smooth;
-            padding: 60px 20px 40px;
+            padding: 30px 20px;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) #1a1e26;
             width: 100%;
             justify-content: safe center;
             align-items: center;
+            height: 100%;
         }
 
         .carousel-container::-webkit-scrollbar {
@@ -213,7 +215,7 @@
             background: var(--accent);
         }
 
-        /* Ẩn thanh cuộn của trình duyệt */
+        /* Ẩn thanh cuộn của trình duyệt (vẫn cuộn được) */
         html {
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -411,13 +413,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            margin-top: 0;
-            padding-bottom: 10px;
+            gap: 10px;
             flex-shrink: 0;
+            padding-bottom: 10px;
         }
 
-        /* NÚT QUAY PHẲNG, MÀU HỒNG ĐẶC TRƯNG */
         .btn-random {
             background: var(--accent);
             color: #fff;
@@ -462,7 +462,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 2000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.2s ease;
@@ -496,8 +496,8 @@
 
         .modal-close {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 16px;
+            right: 20px;
             width: 30px;
             height: 30px;
             background: #111;
@@ -754,10 +754,6 @@
         }
 
         @media (max-width: 640px) {
-            :root {
-                --card-w: clamp(120px, calc((100dvh - 240px) / 1.4), 160px);
-            }
-
             .container {
                 padding: 5px 10px;
             }
@@ -767,7 +763,7 @@
             }
 
             .carousel-container {
-                padding: 40px 10px 20px;
+                padding: 15px 10px;
                 gap: 12px;
             }
 
@@ -933,7 +929,6 @@
     resizeConfettiCanvas();
 
     function launchConfetti() {
-        // ĐỔI MÀU CONFETTI SANG HỒNG VÀ TRẮNG
         const colors = ['#ff3366', '#ff5c85', '#ffffff', '#888888'];
         for (let side = 0; side < 2; side++) {
             const originX = side === 0 ? 0 : confettiCanvas.width;
@@ -1127,10 +1122,18 @@
     }
 
     // LỊCH SỬ QUAY
+    // LỊCH SỬ QUAY
     function saveHistory(actor) {
         let history = JSON.parse(localStorage.getItem('rollHistory') || '[]');
-        const time = new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-        history.unshift({name: actor.name, time: time, imageUrl: actor.imageUrl});
+        const now = new Date();
+        // Lấy giờ:phút:giây
+        const timeStr = now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        // Lấy ngày/tháng/năm
+        const dateStr = now.toLocaleDateString('vi-VN');
+
+        // Lưu cả 2, cách nhau bởi dấu "-"
+        history.unshift({name: actor.name, time: `${timeStr} - ${dateStr}`, imageUrl: actor.imageUrl});
+
         if (history.length > 10) history = history.slice(0, 10);
         localStorage.setItem('rollHistory', JSON.stringify(history));
     }
