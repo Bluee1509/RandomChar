@@ -731,31 +731,65 @@
         /* RESPONSIVE */
         @media (max-width: 768px) {
             header {
-                padding: 0 12px;
+                padding: 0 10px;
+                height: 55px; /* Thu gọn chiều cao header cho đỡ tốn diện tích */
+            }
+
+            .logo {
+                font-size: 16px; /* Thu nhỏ chữ RANDOM */
+                padding: 4px 8px;
+                flex-shrink: 0; /* Không cho logo bị bóp méo */
+            }
+
+            .logo span {
+                font-size: 18px; /* Thu nhỏ chữ CHAR */
             }
 
             .header-right {
-                gap: 8px;
+                flex: 1; /* Cho phép cụm bên phải chiếm phần còn lại */
+                justify-content: flex-end;
+                gap: 6px; /* Giảm khoảng cách giữa các phần tử */
+                min-width: 0; /* CỰC KỲ QUAN TRỌNG: Cho phép flex item co lại nhỏ hơn nội dung */
+                margin-left: 8px;
             }
 
             .search-box {
-                width: 160px;
+                width: 100%; /* Thay vì fix cứng 160px, cho phép nó co giãn */
+                max-width: 130px; /* Giới hạn độ rộng tối đa để nhường chỗ cho icon */
+                min-width: 50px;
             }
 
             .search-box:focus-within {
-                width: 200px;
+                max-width: 160px; /* Khi bấm vào thì nới rộng ra một chút */
+            }
+
+            .search-box input {
+                padding: 6px 8px 6px 26px; /* Thu nhỏ padding của ô input */
+                font-size: 12px;
+            }
+
+            .search-icon {
+                left: 8px;
+                font-size: 12px;
             }
 
             .btn-icon {
-                width: 30px;
-                height: 30px;
+                width: 28px;
+                height: 28px;
                 font-size: 14px;
+                flex-shrink: 0; /* Giữ nguyên kích thước icon, không bị bóp nhỏ */
             }
         }
 
         @media (max-width: 640px) {
             .container {
                 padding: 5px 10px;
+                gap: 10px;
+            }
+
+            /* Thu nhỏ kích thước thẻ trên mobile để vừa màn hình */
+            :root {
+                --card-w: clamp(105px, 32vw, 150px);
             }
 
             .nav-arrow {
@@ -763,13 +797,23 @@
             }
 
             .carousel-container {
-                padding: 15px 10px;
+                padding: 10px 10px;
                 gap: 12px;
+            }
+
+            /* Thêm safe-area-inset-bottom để nút không bị thanh điều hướng che */
+            .action-area {
+                padding-bottom: calc(15px + env(safe-area-inset-bottom));
+                gap: 8px;
             }
 
             .btn-random {
                 padding: 10px 30px;
                 font-size: 15px;
+            }
+
+            .status-text {
+                font-size: 12px;
             }
 
             .modal-body {
