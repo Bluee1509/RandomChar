@@ -21,14 +21,8 @@
             --text-input: #000000;
             --border-color: #222222;
 
-            /*
-             * TỰ ĐỘNG THU PHÓNG (FLUID SCALING):
-             * Lấy giá trị NHỎ NHẤT giữa:
-             * 1. 18% chiều rộng màn hình (vw)
-             * 2. (Chiều cao màn hình - 250px) / 1.4 (dvh)
-             * Giới hạn trong khoảng từ 140px đến 450px để không bị quá bé (trên mobile) hoặc quá khổng lồ (trên 4K).
-             */
-            --card-w: clamp(140px, min(16vw, calc((100dvh - 250px) / 1.45)), 380px);
+            /* Tinh chỉnh kích thước để vừa khít màn HD (1366x768) không bị tràn */
+            --card-w: clamp(140px, min(16vw, calc((100dvh - 280px) / 1.45)), 380px);
         }
 
         * {
@@ -38,15 +32,28 @@
             user-select: none;
         }
 
-        body {
+        /* KHÓA CỨNG CUỘN DỌC TRÊN TOÀN BỘ TRANG */
+        html, body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             height: 100vh;
             height: 100dvh;
+            width: 100%;
+            overflow: hidden !important; /* Cấm cuộn dọc tuyệt đối */
+
+            /* Ẩn thanh cuộn dọc của trình duyệt */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Khóa cuộn dọc */
         }
 
         /* HEADER */
@@ -160,7 +167,7 @@
 
         /* CONTAINER CHÍNH */
         .container {
-            max-width: 1600px; /* Tăng lên 1600px để bung xõa hết màn Full HD */
+            max-width: 1600px;
             width: 100%;
             margin: 0 auto;
             padding: 10px 20px;
@@ -169,7 +176,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px; /* Khoảng cách giữa carousel và nút */
+            gap: 20px;
             min-height: 0;
         }
 
@@ -180,24 +187,29 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: 1; /* Cho phép khung này lấp đầy không gian trống */
+            flex: 1;
             min-height: 0;
         }
 
+        /* KHUNG CHỨA THẺ */
         .carousel-container {
             display: flex;
-            gap: clamp(16px, 1.5vw, 36px); /* Khoảng cách thẻ tự động giãn ra trên màn to */
-            overflow-x: auto;
+            gap: clamp(16px, 1.5vw, 36px);
+            overflow-x: auto; /* Cho phép cuộn ngang */
+            overflow-y: hidden; /* Cấm cuộn dọc trong khung này (ngăn thẻ Winner đẩy trang) */
             scroll-behavior: smooth;
             padding: 30px 20px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) #1a1e26;
             width: 100%;
             justify-content: safe center;
             align-items: center;
             height: 100%;
+
+            /* Thanh cuộn ngang màu hồng */
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) #1a1e26;
         }
 
+        /* Tùy chỉnh thanh cuộn ngang (Chrome/Safari/Edge) */
         .carousel-container::-webkit-scrollbar {
             height: 6px;
         }
@@ -207,24 +219,11 @@
         }
 
         .carousel-container::-webkit-scrollbar-thumb {
-            background: #333;
+            background: var(--accent); /* Luôn giữ màu hồng */
             border-radius: 10px;
         }
 
-        .carousel-container::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
-
-        /* Ẩn thanh cuộn của trình duyệt (vẫn cuộn được) */
-        html {
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        html::-webkit-scrollbar {
-            display: none;
-        }
-
+        /* Hiệu ứng làm mờ thanh cuộn ngang khi đang quay */
         body.is-rolling .carousel-container {
             scrollbar-color: transparent transparent !important;
         }
@@ -732,39 +731,39 @@
         @media (max-width: 768px) {
             header {
                 padding: 0 10px;
-                height: 55px; /* Thu gọn chiều cao header cho đỡ tốn diện tích */
+                height: 55px;
             }
 
             .logo {
-                font-size: 16px; /* Thu nhỏ chữ RANDOM */
+                font-size: 16px;
                 padding: 4px 8px;
-                flex-shrink: 0; /* Không cho logo bị bóp méo */
+                flex-shrink: 0;
             }
 
             .logo span {
-                font-size: 18px; /* Thu nhỏ chữ CHAR */
+                font-size: 18px;
             }
 
             .header-right {
-                flex: 1; /* Cho phép cụm bên phải chiếm phần còn lại */
+                flex: 1;
                 justify-content: flex-end;
-                gap: 6px; /* Giảm khoảng cách giữa các phần tử */
-                min-width: 0; /* CỰC KỲ QUAN TRỌNG: Cho phép flex item co lại nhỏ hơn nội dung */
+                gap: 6px;
+                min-width: 0;
                 margin-left: 8px;
             }
 
             .search-box {
-                width: 100%; /* Thay vì fix cứng 160px, cho phép nó co giãn */
-                max-width: 130px; /* Giới hạn độ rộng tối đa để nhường chỗ cho icon */
+                width: 100%;
+                max-width: 130px;
                 min-width: 50px;
             }
 
             .search-box:focus-within {
-                max-width: 160px; /* Khi bấm vào thì nới rộng ra một chút */
+                max-width: 160px;
             }
 
             .search-box input {
-                padding: 6px 8px 6px 26px; /* Thu nhỏ padding của ô input */
+                padding: 6px 8px 6px 26px;
                 font-size: 12px;
             }
 
@@ -777,7 +776,7 @@
                 width: 28px;
                 height: 28px;
                 font-size: 14px;
-                flex-shrink: 0; /* Giữ nguyên kích thước icon, không bị bóp nhỏ */
+                flex-shrink: 0;
             }
         }
 
@@ -787,7 +786,6 @@
                 gap: 10px;
             }
 
-            /* Thu nhỏ kích thước thẻ trên mobile để vừa màn hình */
             :root {
                 --card-w: clamp(105px, 32vw, 150px);
             }
@@ -801,7 +799,6 @@
                 gap: 12px;
             }
 
-            /* Thêm safe-area-inset-bottom để nút không bị thanh điều hướng che */
             .action-area {
                 padding-bottom: calc(15px + env(safe-area-inset-bottom));
                 gap: 8px;
