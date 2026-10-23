@@ -3,248 +3,578 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập Quản Trị - RANDOM CHAR</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Đăng Nhập / Đăng Ký - RANDOM CHAR</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0d0f12;
-            --bg-card: #171a21;
-            --accent: #ff7700;
-            --accent-hover: #ff8c1a;
-            --accent-glow: rgba(255, 119, 0, 0.4);
+            --bg-main: #0a0a0a;
+            --bg-card: #141414;
+            --accent: #ff3366;
+            --accent-hover: #ff5c85;
+            --accent-glow: rgba(255, 51, 102, 0.6);
             --text-main: #ffffff;
             --text-sub: #9ca3af;
-            --border-color: #272c38;
+            --border-color: #222222;
+            --success: #10b981;
             --danger: #ef4444;
-            --danger-bg: rgba(239, 68, 68, 0.12);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-main);
-            color: var(--text-main);
-            min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-main);
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 51, 102, 0.05) 0%, transparent 60%);
+        }
+
+        .container {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.8), 0 10px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            width: 768px;
+            max-width: 100%;
+            min-height: 480px;
+        }
+
+        h1 {
+            font-weight: 800;
+            margin: 0;
+            font-size: 24px;
+            color: var(--text-main);
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 20px;
+            margin: 20px 0 30px;
+            color: var(--text-sub);
+        }
+
+        button {
+            border-radius: 4px;
+            border: 1px solid var(--accent);
+            background-color: var(--accent);
+            color: #FFFFFF;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px 45px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover:not(.ghost):not(:disabled) {
+            background-color: var(--accent-hover);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        button.ghost {
+            background-color: transparent;
+            border-color: #FFFFFF;
+        }
+
+        button.ghost:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        form {
+            background-color: var(--bg-card);
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            position: relative;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
         }
 
-        /* Nút quay lại trang chủ ở góc trên */
-        .back-home {
-            position: absolute;
-            top: 24px;
-            left: 28px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-sub);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 8px 16px;
-            background-color: #12151c;
+        input {
+            background-color: var(--bg-main);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .back-home:hover {
-            color: var(--accent);
-            border-color: var(--accent);
-            transform: translateX(-3px);
-        }
-
-        /* Khối đăng nhập */
-        .login-card {
+            padding: 12px 15px;
+            margin: 8px 0;
             width: 100%;
-            max-width: 420px;
-            background-color: var(--bg-card);
+            border-radius: 4px;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 51, 102, 0.2);
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0%, 49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+            50%, 100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            background-size: cover;
+            color: #FFFFFF;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        /* Modal OTP */
+        .otp-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .otp-box {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px 32px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 119, 0, 0.08);
+            width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .otp-box input {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 5px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* ===== CUSTOM NOTIFICATION POPUP ===== */
+        .notify-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .notify-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .notify-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
         }
 
-        .login-card::before {
+        .notify-modal.active .notify-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .notify-box::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent) 0%, #ff4d00 100%);
-        }
-
-        .logo-box {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo span {
             background: var(--accent);
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 4px;
         }
 
-        .login-subtitle {
-            margin-top: 10px;
-            font-size: 13px;
-            color: var(--text-sub);
-            letter-spacing: 0.3px;
+        .notify-box.success::before {
+            background: var(--success);
         }
 
-        /* Thông báo lỗi */
-        .error-alert {
-            display: none;
-            background-color: var(--danger-bg);
-            border: 1px solid var(--danger);
-            color: #fca5a5;
-            padding: 11px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 20px;
-            text-align: center;
+        .notify-box.error::before {
+            background: var(--danger);
         }
 
-        /* Form Controls */
-        .form-group {
-            margin-bottom: 20px;
+        .notify-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: inline-block;
         }
 
-        label {
-            display: block;
-            font-size: 12px;
+        .notify-title {
+            font-size: 20px;
             font-weight: 700;
-            color: var(--text-sub);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 13px 15px;
-            background-color: #0d0f13;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            margin-bottom: 10px;
             color: var(--text-main);
+        }
+
+        .notify-message {
             font-size: 14px;
-            outline: none;
-            transition: all 0.2s ease;
+            color: var(--text-sub);
+            margin-bottom: 25px;
+            line-height: 1.5;
         }
 
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            background-color: #11141a;
-        }
-
-        .btn-login {
+        .notify-btn {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent) 0%, #ff4d00 100%);
-            color: #fff;
-            border: none;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(255, 119, 0, 0.4);
-            transition: all 0.25s ease;
-            margin-top: 8px;
+            padding: 10px;
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            font-weight: 600;
         }
 
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(255, 119, 0, 0.6);
-            background: linear-gradient(135deg, var(--accent-hover) 0%, #ff5e00 100%);
+        .notify-btn:hover {
+            background: #333;
+            box-shadow: none;
         }
 
-        .btn-login:active {
-            transform: translateY(0);
-        }
+        @media (max-width: 768px) {
+            .container {
+                min-height: 550px;
+                flex-direction: column;
+                border-radius: 0;
+                border: none;
+            }
 
-        /* Footer card */
-        .card-footer {
-            margin-top: 24px;
-            text-align: center;
-            font-size: 12px;
-            color: #6b7280;
+            .form-container {
+                width: 100%;
+                position: relative;
+            }
+
+            .overlay-container {
+                display: none;
+            }
+
+            .sign-in-container, .sign-up-container {
+                position: relative;
+                width: 100%;
+                opacity: 1;
+            }
+
+            .sign-up-container {
+                display: none;
+            }
+
+            .container.right-panel-active .sign-in-container {
+                display: none;
+            }
+
+            .container.right-panel-active .sign-up-container {
+                display: block;
+                transform: none;
+            }
+
+            form {
+                padding: 0 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-<a href="/" class="back-home">
-    <span>❮</span> Về Trang Chủ
-</a>
+<!-- CUSTOM NOTIFICATION MODAL (Chỉ dùng cho Lỗi/Thông báo quan trọng) -->
+<div class="notify-modal" id="notifyModal">
+    <div class="notify-box" id="notifyBox">
+        <div class="notify-icon" id="notifyIcon">ℹ️</div>
+        <div class="notify-title" id="notifyTitle">Thông báo</div>
+        <div class="notify-message" id="notifyMessage">Nội dung thông báo...</div>
+        <button class="notify-btn" onclick="closePopup()">Đóng</button>
+    </div>
+</div>
 
-<div class="login-card">
-    <div class="logo-box">
-        <div class="logo">
-            RANDOM<span>CHAR</span>
-        </div>
-        <div class="login-subtitle">HỆ THỐNG QUẢN TRỊ VIÊN</div>
+<div class="container" id="container">
+    <!-- Form Đăng Ký -->
+    <div class="form-container sign-up-container">
+        <form id="registerForm">
+            <h1>Tạo Tài Khoản</h1>
+            <input type="text" id="regUsername" placeholder="Tên đăng nhập" required/>
+            <input type="email" id="regEmail" placeholder="Địa chỉ Email" required/>
+            <input type="password" id="regPassword" placeholder="Mật khẩu" required/>
+            <button type="submit" id="btnRegister" style="margin-top: 20px;">Đăng Ký</button>
+        </form>
     </div>
 
-    <!-- Hộp thông báo khi gõ sai tài khoản hoặc mật khẩu -->
-    <div class="error-alert" id="error-box">
-        ⚠️ Tên đăng nhập hoặc mật khẩu không chính xác!
+    <!-- Form Đăng Nhập -->
+    <div class="form-container sign-in-container">
+        <form action="/login" method="POST" id="loginForm">
+            <h1>Đăng Nhập</h1>
+            <input type="text" name="username" placeholder="Tên đăng nhập" required/>
+            <input type="password" name="password" placeholder="Mật khẩu" required/>
+            <button type="submit" id="btnLogin" style="margin-top: 20px;">Đăng Nhập</button>
+        </form>
     </div>
 
-    <!-- Form gửi trực tiếp tới endpoint /login mặc định của Spring Security -->
-    <form action="/login" method="POST">
-        <div class="form-group">
-            <label for="username">Tên tài khoản</label>
-            <input type="text" id="username" name="username" required autofocus placeholder="Nhập tài khoản admin">
+    <!-- Panel Trượt -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Chào mừng trở lại!</h1>
+                <p>Để kết nối, vui lòng đăng nhập bằng thông tin của bạn</p>
+                <button class="ghost" id="signIn">Đăng Nhập</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Xin chào, Bạn!</h1>
+                <p>Nhập thông tin cá nhân để bắt đầu hành trình</p>
+                <button class="ghost" id="signUp">Đăng Ký</button>
+            </div>
         </div>
+    </div>
+</div>
 
-        <div class="form-group">
-            <label for="password">Mật khẩu</label>
-            <input type="password" id="password" name="password" required placeholder="Nhập mật khẩu">
-        </div>
-
-        <button type="submit" class="btn-login">Đăng Nhập</button>
-    </form>
-
-    <div class="card-footer">
-        Khu vực dành riêng cho Quản trị viên hệ thống
+<!-- Popup OTP (Hiện ngay lập tức khi đăng ký thành công) -->
+<div class="otp-modal" id="otpModal">
+    <div class="otp-box">
+        <h2>Xác Thực Email</h2>
+        <p style="font-size: 13px; color: var(--text-sub); margin: 10px 0 20px;">
+            Mã OTP đã được gửi tới email <b id="otpEmailDisplay" style="color: var(--text-main);"></b>.<br>Vui lòng kiểm
+            tra hộp thư (cả mục Spam).
+        </p>
+        <input type="text" id="otpInput" maxlength="6" placeholder="______" required>
+        <button id="btnVerify" onclick="verifyOtp()" style="margin-top: 20px; width: 100%;">Xác Nhận</button>
     </div>
 </div>
 
 <script>
-    // Tự động kiểm tra URL, nếu có tham số ?error thì hiện hộp cảnh báo
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('error')) {
-        document.getElementById('error-box').style.display = 'block';
+    const container = document.getElementById('container');
+    document.getElementById('signUp').addEventListener('click', () => container.classList.add("right-panel-active"));
+    document.getElementById('signIn').addEventListener('click', () => container.classList.remove("right-panel-active"));
+
+    let tempUsername = "";
+
+    // Hàm hiển thị Popup thông báo (Dùng cho lỗi)
+    function showPopup(title, message, type = 'info') {
+        const modal = document.getElementById('notifyModal');
+        const box = document.getElementById('notifyBox');
+        const icon = document.getElementById('notifyIcon');
+        const titleEl = document.getElementById('notifyTitle');
+        const msgEl = document.getElementById('notifyMessage');
+
+        box.className = 'notify-box ' + type;
+
+        if (type === 'success') icon.innerText = '✅';
+        else if (type === 'error') icon.innerText = '❌';
+        else icon.innerText = 'ℹ️';
+
+        titleEl.innerText = title;
+        msgEl.innerText = message;
+
+        modal.classList.add('active');
     }
+
+    function closePopup() {
+        document.getElementById('notifyModal').classList.remove('active');
+    }
+
+    // Gọi API Đăng ký
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnRegister');
+        const username = document.getElementById('regUsername').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        tempUsername = username;
+
+        btn.disabled = true;
+        btn.innerText = "Đang xử lý...";
+
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, email, password})
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                // TỐI ƯU UX: KHÔNG hiện popup thông báo rườm rà, hiện luôn form nhập OTP
+                document.getElementById('otpEmailDisplay').innerText = email; // Hiển thị email nhận OTP
+                document.getElementById('otpModal').style.display = 'flex';
+            } else {
+                showPopup("Đăng ký thất bại", data.message || "Có lỗi xảy ra, vui lòng thử lại.", "error");
+            }
+        } catch (err) {
+            showPopup("Lỗi kết nối", "Không thể kết nối đến máy chủ!", "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Đăng Ký";
+        }
+    });
+
+    // Gọi API Xác thực OTP
+    async function verifyOtp() {
+        const otp = document.getElementById('otpInput').value;
+        const btn = document.getElementById('btnVerify');
+
+        if (otp.length !== 6) {
+            showPopup("Lỗi", "Vui lòng nhập đủ 6 số OTP!", "error");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Đang kiểm tra...";
+
+        try {
+            const res = await fetch('/api/auth/verify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: tempUsername, otp: otp})
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                // Đóng popup OTP
+                document.getElementById('otpModal').style.display = 'none';
+                document.getElementById('otpInput').value = '';
+
+                // Hiện thông báo chúc mừng thành công
+                showPopup("Xác thực thành công", "Tài khoản của bạn đã được kích hoạt. Hãy đăng nhập ngay!", "success");
+
+                // Trượt về form đăng nhập
+                container.classList.remove("right-panel-active");
+            } else {
+                showPopup("Xác thực thất bại", data.message || "Mã OTP không chính xác!", "error");
+            }
+        } catch (err) {
+            showPopup("Lỗi kết nối", "Không thể kết nối đến máy chủ!", "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Xác Nhận";
+        }
+    }
+
+    // Bắt lỗi nếu đăng nhập sai (Spring Security redirect về ?error=true)
+    window.addEventListener('DOMContentLoaded', () => {
+        if (new URLSearchParams(window.location.search).has('error')) {
+            showPopup("Đăng nhập thất bại", "Sai tài khoản hoặc mật khẩu, hoặc tài khoản chưa được xác thực!", "error");
+        }
+    });
 </script>
+
 </body>
 </html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Khai báo các file thay đổi (changelog) ở đây -->
+    <!-- File V1 chúng ta bỏ qua vì đã dùng baseline-version=1 ở properties -->
+    <changeSet id="baseline-marker" author="fresher">
+        <tagDatabase tag="baseline-1"/>
+    </changeSet>
+
+    <!-- Bạn sẽ thêm các file V2, V3... ở đây -->
+    <include file="db/changelog/V2__create_users_table.xml"/>
+    <include file="db/changelog/V3__add_otp_expiry_to_users.xml"/>
+
+</databaseChangeLog>
