@@ -2,7 +2,7 @@ package com.example.randomchar.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -20,5 +20,5 @@ public class SpinHistory {
     private String actorName;
     private String actorImageUrl;
     @Builder.Default
-    private LocalDateTime spinTime = LocalDateTime.now();
+    private ZonedDateTime spinTime = ZonedDateTime.now();
 }
