@@ -109,7 +109,7 @@ public class AuthController {
         // BƯỚC 3: GỬI EMAIL QUA BREVO HTTP API
         try {
             sendOtpEmail(email, username, otp);
-            System.out.println("✅ Email OTP đã được gửi qua Brevo API tới: " + email);
+            System.out.println("✅ Email OTP đã được gửi thành công qua Brevo API.");
         } catch (RestClientResponseException ex) {
             // Brevo trả 4xx/5xx -> log body để debug
             System.err.println("❌ Brevo API error: " + ex.getStatusCode()
