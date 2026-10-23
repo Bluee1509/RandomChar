@@ -1441,13 +1441,6 @@
             startRandomRoll();
         }
     });
-    // Tự động làm mới danh sách khi người dùng quay lại tab
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && !isRolling) {
-            console.log("Người dùng quay lại tab - Đang cập nhật dữ liệu mới...");
-            loadActors();
-        }
-    });
 </script>
 </body>
 </html>

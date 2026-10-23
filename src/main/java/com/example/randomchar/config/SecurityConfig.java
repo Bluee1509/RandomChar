@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -82,6 +83,7 @@ public class SecurityConfig {
         http
                 .authenticationManager(authenticationManager)
                 .csrf(csrf -> csrf.disable())
+                .addFilterBefore(new RateLimitFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 // XỬ LÝ LỖI 403: Nếu User cố vào trang Admin -> Đá về trang chủ kèm thông báo
                 .exceptionHandling(exception -> exception
