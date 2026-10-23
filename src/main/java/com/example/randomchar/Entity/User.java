@@ -24,6 +24,14 @@ public class User {
 
     private String otpCode;
     private boolean enabled = false;
+
     private LocalDateTime createdAt = LocalDateTime.now();
+
     private LocalDateTime otpExpiryTime;
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 }

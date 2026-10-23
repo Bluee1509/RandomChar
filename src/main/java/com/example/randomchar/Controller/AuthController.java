@@ -88,7 +88,6 @@ public class AuthController {
                 .password(passwordEncoder.encode(password))
                 .email(email)
                 .otpCode(otp)
-                // SET THỜI GIAN HẾT HẠN LÀ 5 PHÚT
                 .otpExpiryTime(LocalDateTime.now().plusMinutes(5))
                 .enabled(false)
                 .build();
@@ -118,8 +117,8 @@ public class AuthController {
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) return ResponseEntity.badRequest().body(Map.of("message", "User không tồn tại!"));
 
-        // 1. KIỂM TRA THỜI GIAN HẾT HẠN TRƯỚC
-        if (user.getOtpExpiryTime() != null && user.getOtpExpiryTime().isBefore(LocalDateTime.now())) {
+        // 1. KIỂM TRA THỜI GIAN HẾT HẠN TRƯỚC (Bảo mật hơn)
+        if (user.getOtpExpiryTime() == null || user.getOtpExpiryTime().isBefore(LocalDateTime.now())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP đã hết hạn (quá 5 phút). Vui lòng bấm Đăng ký lại để nhận mã mới!"));
         }
 

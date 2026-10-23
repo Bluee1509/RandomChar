@@ -249,6 +249,35 @@
             border: 1px solid var(--border-color);
             width: 380px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        /* Style cho nút X của form OTP */
+        .otp-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px !important;      /* Ép chiều rộng cố định */
+            height: 32px !important;     /* Ép chiều cao cố định */
+            padding: 0 !important;       /* QUAN TRỌNG: Xóa padding 12px 45px của global button */
+            background-color: #222 !important; /* Nền xám tối để dễ nhìn thấy */
+            border: 1px solid #444 !important; /* Viền mỏng */
+            color: #fff !important;      /* Màu chữ trắng rõ nét */
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            outline: none;
+            z-index: 10;
+        }
+
+        .otp-close-btn:hover {
+            background-color: var(--accent) !important; /* Hover vào thì chuyển màu hồng */
+            border-color: var(--accent) !important;
+            color: #fff !important;
         }
 
         .otp-box input {
@@ -450,6 +479,7 @@
 <!-- Popup OTP (Hiện ngay lập tức khi đăng ký thành công) -->
 <div class="otp-modal" id="otpModal">
     <div class="otp-box">
+        <button class="otp-close-btn" onclick="closeOtpModal()">✕</button>
         <h2>Xác Thực Email</h2>
         <p style="font-size: 13px; color: var(--text-sub); margin: 10px 0 20px;">
             Mã OTP đã được gửi tới email <b id="otpEmailDisplay" style="color: var(--text-main);"></b>.<br>Vui lòng kiểm
@@ -489,6 +519,13 @@
 
     function closePopup() {
         document.getElementById('notifyModal').classList.remove('active');
+    }
+
+    function closeOtpModal() {
+        document.getElementById('otpModal').style.display = 'none';
+        document.getElementById('otpInput').value = '';
+        // Đưa người dùng về lại form Đăng ký để làm lại
+        container.classList.add("right-panel-active");
     }
 
     // Gọi API Đăng ký
