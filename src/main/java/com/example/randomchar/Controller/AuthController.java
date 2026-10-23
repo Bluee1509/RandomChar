@@ -21,9 +21,8 @@ import java.util.Random;
 public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender; // Quay lại dùng JavaMailSender
 
-    // Tiêm tên Admin hệ thống từ file cấu hình (Environment Variable) vào đây
     @Value("${spring.security.user.name}")
     private String systemAdminUsername;
 
@@ -42,12 +41,10 @@ public class AuthController {
         // ========================================================
         // BƯỚC 0: BẢO MẬT - CHẶN CÁC TÊN TÀI KHOẢN HỆ THỐNG
         // ========================================================
-        // 1. Chặn nếu trùng với Admin hệ thống (lấy từ Env)
         if (systemAdminUsername.equalsIgnoreCase(username)) {
             return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập này là của hệ thống, vui lòng chọn tên khác!"));
         }
 
-        // 2. Chặn các từ khóa nhạy cảm khác (Hardcode)
         List<String> reservedWords = List.of("root", "administrator", "system", "support", "mod");
         if (reservedWords.contains(username.toLowerCase())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập này không được phép sử dụng!"));
@@ -62,7 +59,6 @@ public class AuthController {
             if (existingUser.isEnabled()) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập đã được sử dụng và kích hoạt!"));
             } else {
-                // Nếu chưa kích hoạt, xóa đi để cho phép đăng ký lại
                 userRepository.delete(existingUser);
             }
         }
@@ -73,13 +69,12 @@ public class AuthController {
             if (existingUser.isEnabled()) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Email đã được sử dụng!"));
             } else {
-                // Nếu chưa kích hoạt, xóa đi
                 userRepository.delete(existingUser);
             }
         }
 
         // ========================================================
-        // BƯỚC 2: TẠO USER VÀ GỬI OTP
+        // BƯỚC 2: TẠO USER VÀ GỬI OTP QUA BREVO SMTP
         // ========================================================
         String otp = String.format("%06d", new Random().nextInt(999999));
 
@@ -94,13 +89,18 @@ public class AuthController {
 
         userRepository.save(user);
 
-        // Gửi Email
+        // Gửi Email qua Brevo SMTP
         try {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("randomchar000@gmail.com");
             message.setTo(email);
             message.setSubject("Xác thực tài khoản RANDOM CHAR");
             message.setText("Chào " + username + ",\n\nMã xác thực (OTP) của bạn là: " + otp + "\n\nMã này có hiệu lực trong 5 phút.\n\nVui lòng nhập mã này để hoàn tất đăng ký.");
+
+            // Thực hiện gửi
             mailSender.send(message);
+            System.out.println("✅ Email OTP đã được gửi qua Brevo tới: " + email);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(Map.of("message", "Không thể gửi email. Vui lòng kiểm tra lại cấu hình SMTP!"));
@@ -134,7 +134,7 @@ public class AuthController {
         return ResponseEntity.badRequest().body(Map.of("message", "Mã OTP không chính xác!"));
     }
 
-    // API Lấy thông tin User hiện tại (Dùng cho hiển thị tên trên Header)
+    // API Lấy thông tin User hiện tại
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(org.springframework.security.core.Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated() || authentication.getName().equals("anonymousUser")) {

@@ -34,7 +34,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
-        String ip = request.getRemoteAddr();
+
+        String ip = getClientIP(request);
         Bucket bucket;
 
         // 2. Phân loại API để lấy đúng "xô" token tương ứng
@@ -60,6 +61,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
             // Thông báo lỗi thân thiện bằng tiếng Việt
             response.getWriter().write("{\"error\": \"Bạn thao tác quá nhanh, vui lòng thử lại sau vài giây!\"}");
         }
+    }
+    private String getClientIP(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader == null) {
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0]; // Lấy IP đầu tiên (IP thật)
     }
 
     // ==========================================

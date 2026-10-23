@@ -1316,9 +1316,26 @@
                     historyList.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding: 20px;">Chưa có lịch sử quay.</div>';
                 } else {
                     const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
+
                     historyList.innerHTML = history.map(item => {
-                        const date = new Date(item.spinTime);
-                        const timeStr = date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' - ' + date.toLocaleDateString('vi-VN');
+                        let timeStr = "Không xác định";
+
+                        if (item.spinTime) {
+                            // 1. Xử lý chuỗi: Cắt bỏ phần [Asia/Ho_Chi_Minh] nếu có
+                            let rawDate = item.spinTime;
+                            if (typeof rawDate === 'string' && rawDate.includes('[')) {
+                                rawDate = rawDate.split('[')[0];
+                            }
+
+                            // 2. Tạo đối tượng Date
+                            const date = new Date(rawDate);
+
+                            // 3. Kiểm tra xem Date có hợp lệ không (tránh lỗi Invalid Date)
+                            if (!isNaN(date.getTime())) {
+                                timeStr = date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' - ' + date.toLocaleDateString('vi-VN');
+                            }
+                        }
+
                         return `
                         <div class="history-item">
                             <img src="${item.actorImageUrl || fallbackImg}" alt="${item.actorName}">
