@@ -14,5 +14,6 @@
     <!-- Bạn sẽ thêm các file V2, V3... ở đây -->
     <include file="db/changelog/V2__create_users_table.xml"/>
     <include file="db/changelog/V3__add_otp_expiry_to_users.xml"/>
+    <include file="db/changelog/V4__create_spin_history_table.xml"/>
 
 </databaseChangeLog>

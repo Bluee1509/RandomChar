@@ -2,6 +2,8 @@ package com.example.randomchar.Controller;
 
 import com.example.randomchar.Entity.Actor;
 import com.example.randomchar.Repository.ActorRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,10 @@ public class ActorController {
     }
 
     @GetMapping
+    @Cacheable(value = "actors", key = "'allActors'")
     public List<Actor> getAllActors() {
         // Sắp xếp theo thời gian tạo (cũ nhất ở trên)
+        System.out.println("------ ĐANG LẤY DỮ LIỆU TỪ DATABASE ------");
         return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").ascending());
     }
 
@@ -34,12 +38,14 @@ public class ActorController {
     }
 
     @PostMapping
+    @CacheEvict(value = "actors", allEntries = true)
     public ResponseEntity<Actor> createActor(@RequestBody Actor actor) {
         Actor savedActor = actorRepository.save(actor);
         return new ResponseEntity<>(savedActor, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
+    @CacheEvict(value = "actors", allEntries = true)
     public ResponseEntity<Actor> patchActor(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         return actorRepository.findById(id).map(actor -> {
             if (updates.containsKey("name") && updates.get("name") != null) {
@@ -63,6 +69,7 @@ public class ActorController {
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "actors", allEntries = true)
     public ResponseEntity<Void> deleteActor(@PathVariable UUID id) {
         if (actorRepository.existsById(id)) {
             actorRepository.deleteById(id);

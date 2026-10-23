@@ -984,6 +984,7 @@
     let masterList = [];
     let displayList = [];
     let isRolling = false;
+    let currentUser = null;
     const currentYear = new Date().getFullYear();
 
     // --- LOGIC USER DROPDOWN ---
@@ -996,6 +997,7 @@
             if (res.ok) {
                 // Đã đăng nhập
                 const data = await res.json();
+                currentUser = data.username;
                 document.getElementById('username-display').innerText = data.username;
                 document.getElementById('userAvatar').innerText = data.username.charAt(0).toUpperCase();
 
@@ -1282,33 +1284,57 @@
     }
 
     // LỊCH SỬ QUAY
-    function saveHistory(actor) {
-        let history = JSON.parse(localStorage.getItem('rollHistory') || '[]');
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
-        const dateStr = now.toLocaleDateString('vi-VN');
-        history.unshift({name: actor.name, time: `${timeStr} - ${dateStr}`, imageUrl: actor.imageUrl});
-        if (history.length > 10) history = history.slice(0, 10);
-        localStorage.setItem('rollHistory', JSON.stringify(history));
+    async function saveHistory(actor) {
+        if (!currentUser) return; // Không lưu nếu chưa đăng nhập
+        try {
+            await fetch('/api/history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ actorName: actor.name, actorImageUrl: actor.imageUrl })
+            });
+        } catch (e) {
+            console.error("Lỗi lưu lịch sử:", e);
+        }
     }
 
-    function openHistoryModal() {
+    async function openHistoryModal() {
         const historyList = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('rollHistory') || '[]');
-        if (history.length === 0) {
-            historyList.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding: 20px;">Chưa có lịch sử quay.</div>';
-        } else {
-            historyList.innerHTML = history.map(item => `
-                <div class="history-item">
-                    <img src="${item.imageUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'}" alt="${item.name}">
-                    <div class="history-info">
-                        <div class="history-name">${item.name}</div>
-                        <div class="history-time">${item.time}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
         document.getElementById('history-modal').classList.add('active');
+
+        if (!currentUser) {
+            historyList.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding: 20px;">Vui lòng đăng nhập để xem lịch sử quay!</div>';
+            return;
+        }
+
+        historyList.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding: 20px;">Đang tải dữ liệu...</div>';
+
+        try {
+            const res = await fetch('/api/history');
+            if (res.ok) {
+                const history = await res.json();
+                if (history.length === 0) {
+                    historyList.innerHTML = '<div style="text-align:center; color:var(--text-sub); padding: 20px;">Chưa có lịch sử quay.</div>';
+                } else {
+                    const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
+                    historyList.innerHTML = history.map(item => {
+                        const date = new Date(item.spinTime);
+                        const timeStr = date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' - ' + date.toLocaleDateString('vi-VN');
+                        return `
+                        <div class="history-item">
+                            <img src="${item.actorImageUrl || fallbackImg}" alt="${item.actorName}">
+                            <div class="history-info">
+                                <div class="history-name">${item.actorName}</div>
+                                <div class="history-time">${timeStr}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            } else {
+                historyList.innerHTML = '<div style="text-align:center; color:var(--danger); padding: 20px;">Lỗi khi tải lịch sử!</div>';
+            }
+        } catch (err) {
+            historyList.innerHTML = '<div style="text-align:center; color:var(--danger); padding: 20px;">Lỗi kết nối máy chủ!</div>';
+        }
     }
 
     function closeHistoryModal() {
@@ -1413,6 +1439,13 @@
         if ((e.code === 'Space' || e.code === 'Enter') && !isRolling) {
             e.preventDefault();
             startRandomRoll();
+        }
+    });
+    // Tự động làm mới danh sách khi người dùng quay lại tab
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !isRolling) {
+            console.log("Người dùng quay lại tab - Đang cập nhật dữ liệu mới...");
+            loadActors();
         }
     });
 </script>

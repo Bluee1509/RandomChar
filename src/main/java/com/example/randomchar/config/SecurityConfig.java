@@ -95,6 +95,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/login.html", "/error", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/actors/**").permitAll()
+                        .requestMatchers("/api/history/**").permitAll()
 
                         // CHỈ ADMIN MỚI ĐƯỢC VÀO DASHBOARD VÀ THÊM/SỬA/XÓA
                         .requestMatchers("/dashboard.html").hasRole("ADMIN")
