@@ -897,7 +897,7 @@
             const res = await fetch(API_URL);
             actorsData = await res.json();
 
-            actorsData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            actorsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             const tbody = document.getElementById('table-body');
             const badge = document.getElementById('total-badge');

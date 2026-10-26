@@ -61,6 +61,11 @@ public class AuthController {
         String password = request.get("password");
         String email = request.get("email");
 
+        if (!isValidPassword(password)) {
+            return ResponseEntity.badRequest().body(Map.of("message",
+                    "Mật khẩu phải từ 6-20 ký tự và bao gồm cả chữ cái và chữ số!"));
+        }
+
         // BƯỚC 0: CHẶN TÊN HỆ THỐNG
         if (systemAdminUsername.equalsIgnoreCase(username)) {
             return ResponseEntity.badRequest()
@@ -164,6 +169,105 @@ public class AuthController {
                 .body(payload)
                 .retrieve()
                 .toBodilessEntity();   // ném exception nếu 4xx/5xx
+    }
+    // Hàm kiểm tra độ mạnh mật khẩu (6-20 ký tự, có chữ và số)
+    private boolean isValidPassword(String password) {
+        if (password == null) return false;
+        // Regex giải thích:
+        // (?=.*[a-zA-Z]) : Phải có ít nhất 1 chữ cái
+        // (?=.*[0-9])    : Phải có ít nhất 1 chữ số
+        // [a-zA-Z0-9]{6,20} : Chỉ chứa chữ và số, độ dài từ 6 đến 20
+        // (Nếu bạn muốn cho phép ký tự đặc biệt, đổi thành: ^(?=.*[a-zA-Z])(?=.*[0-9]).{6,20}$)
+        return password.matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,20}$");
+    }
+
+    // TÍNH NĂNG QUÊN MẬT KHẨU
+    // ========================================================
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Email không tồn tại trong hệ thống!"));
+        }
+
+        // Tạo mã OTP mới
+        String otp = String.format("%06d", new Random().nextInt(999999));
+
+        // Lưu OTP vào DB (dùng chung cột với đăng ký)
+        user.setOtpCode(otp);
+        user.setOtpExpiryTime(LocalDateTime.now().plusMinutes(5));
+        userRepository.save(user);
+
+        try {
+            // Gửi mail qua Brevo
+            sendResetPasswordEmail(email, user.getUsername(), otp);
+            System.out.println("✅ Email khôi phục mật khẩu đã gửi tới: " + email);
+            return ResponseEntity.ok(Map.of("message", "Mã xác nhận đã được gửi tới email của bạn."));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("message", "Lỗi gửi email. Vui lòng thử lại sau!"));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String otp = request.get("otp");
+        String newPassword = request.get("newPassword");
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "User không tồn tại!"));
+        }
+
+        if (!isValidPassword(newPassword)) {
+            return ResponseEntity.badRequest().body(Map.of("message",
+                    "Mật khẩu phải từ 6-20 ký tự và bao gồm cả chữ cái và chữ số!"));
+        }
+
+        // Kiểm tra hạn OTP
+        if (user.getOtpExpiryTime() == null || user.getOtpExpiryTime().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Mã xác nhận đã hết hạn. Vui lòng thử lại!"));
+        }
+
+        // Kiểm tra mã OTP
+        if (user.getOtpCode() == null || !user.getOtpCode().equals(otp)) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Mã xác nhận không chính xác!"));
+        }
+
+        // Cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setOtpCode(null); // Xóa mã
+        user.setOtpExpiryTime(null); // Xóa thời gian
+        userRepository.save(user);
+
+        return ResponseEntity.ok(Map.of("message", "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay."));
+    }
+
+    // Hàm gửi mail khôi phục (để dưới hàm sendOtpEmail)
+    private void sendResetPasswordEmail(String toEmail, String username, String otp) {
+        String htmlContent = "<html><body style=\"font-family:Arial,sans-serif;color:#222;\">"
+                + "<h2 style=\"color:#ff3366;\">Khôi phục mật khẩu - RANDOM CHAR</h2>"
+                + "<p>Chào <b>" + username + "</b>,</p>"
+                + "<p>Bạn (hoặc ai đó) đã yêu cầu khôi phục mật khẩu cho tài khoản này.</p>"
+                + "<p>Mã xác nhận của bạn là:</p>"
+                + "<p style=\"font-size:32px;font-weight:bold;letter-spacing:8px;"
+                + "color:#ff3366;background:#f5f5f5;padding:12px 20px;display:inline-block;"
+                + "border-radius:6px;\">" + otp + "</p>"
+                + "<p>Mã này có hiệu lực trong <b>5 phút</b>.</p>"
+                + "<p>Nếu bạn không yêu cầu, hãy bỏ qua email này.</p>"
+                + "</body></html>";
+
+        Map<String, Object> payload = Map.of(
+                "sender", Map.of("name", brevoSenderName, "email", brevoSenderEmail),
+                "to", List.of(Map.of("email", toEmail, "name", username)),
+                "subject", "Khôi phục mật khẩu - RANDOM CHAR",
+                "htmlContent", htmlContent
+        );
+
+        brevoClient.post().uri("/smtp/email").body(payload).retrieve().toBodilessEntity();
     }
 
     // ========================================================

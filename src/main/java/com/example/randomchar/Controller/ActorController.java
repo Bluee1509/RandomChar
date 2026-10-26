@@ -27,7 +27,7 @@ public class ActorController {
     public List<Actor> getAllActors() {
         // Sắp xếp theo thời gian tạo (cũ nhất ở trên)
         System.out.println("------ ĐANG LẤY DỮ LIỆU TỪ DATABASE ------");
-        return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").ascending());
+        return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").descending());
     }
 
     @GetMapping("/random")

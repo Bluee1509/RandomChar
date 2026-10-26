@@ -39,7 +39,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
         Bucket bucket;
 
         // 2. Phân loại API để lấy đúng "xô" token tương ứng
-        if (path.startsWith("/api/auth/register")) {
+        if (path.startsWith("/api/auth/register")|| path.startsWith("/api/auth/forgot-password")) {
             // Nhóm 1: Đăng ký (Nghiêm ngặt - 3 lần/phút để chống spam mail)
             bucket = cache.computeIfAbsent(ip + "_register", k -> createStrictBucket());
         } else if (path.startsWith("/api/actors/random")) {

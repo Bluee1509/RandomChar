@@ -80,6 +80,12 @@ public class SecurityConfig {
         http
                 .authenticationManager(authenticationManager)
                 .csrf(csrf -> csrf.disable())
+                // Thêm vào SecurityConfig.java
+                .rememberMe(remember -> remember
+                        .key("randomCharSecretKey2024") // Khóa bí mật
+                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
+                        .userDetailsService(databaseUserDetailsService()) // Chỉ định rõ dùng DB cho Remember Me
+                )
                 // Sử dụng injected bean thay vì new
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
