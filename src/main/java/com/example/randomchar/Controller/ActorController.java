@@ -25,9 +25,9 @@ public class ActorController {
     @GetMapping
     @Cacheable(value = "actors", key = "'allActors'")
     public List<Actor> getAllActors() {
-        // Sắp xếp theo thời gian tạo (cũ nhất ở trên)
+        // Sắp xếp theo thời gian tạo (mới nhất ở trên)
         System.out.println("------ ĐANG LẤY DỮ LIỆU TỪ DATABASE ------");
-        return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").descending());
+        return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").ascending());
     }
 
     @GetMapping("/random")
