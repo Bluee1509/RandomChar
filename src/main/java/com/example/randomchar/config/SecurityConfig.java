@@ -29,12 +29,14 @@ public class SecurityConfig {
     private String adminPassword;
 
     private final UserRepository userRepository;
-    private final RateLimitFilter rateLimitFilter; // Inject Filter vào đây
+    private final RateLimitFilter rateLimitFilter;
+    private final VisitorTrackingFilter visitorTrackingFilter;
 
-    // Sửa Constructor để nhận RateLimitFilter
-    public SecurityConfig(UserRepository userRepository, RateLimitFilter rateLimitFilter) {
+    // SỬA LỖI: Thêm dấu phẩy (,) giữa 2 tham số rateLimitFilter và visitorTrackingFilter
+    public SecurityConfig(UserRepository userRepository, RateLimitFilter rateLimitFilter, VisitorTrackingFilter visitorTrackingFilter) {
         this.userRepository = userRepository;
         this.rateLimitFilter = rateLimitFilter;
+        this.visitorTrackingFilter = visitorTrackingFilter;
     }
 
     @Bean
@@ -80,14 +82,15 @@ public class SecurityConfig {
         http
                 .authenticationManager(authenticationManager)
                 .csrf(csrf -> csrf.disable())
-                // Thêm vào SecurityConfig.java
                 .rememberMe(remember -> remember
-                        .key("randomCharSecretKey2024") // Khóa bí mật
-                        .tokenValiditySeconds(7 * 24 * 60 * 60) // 7 ngày
-                        .userDetailsService(databaseUserDetailsService()) // Chỉ định rõ dùng DB cho Remember Me
+                        .key("randomCharSecretKey2024")
+                        .tokenValiditySeconds(7 * 24 * 60 * 60)
+                        .userDetailsService(databaseUserDetailsService())
                 )
-                // Sử dụng injected bean thay vì new
+                // 1. Chạy RateLimitFilter trước
                 .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                // 2. SỬA LỖI: Thêm VisitorTrackingFilter vào chạy ngay sau RateLimitFilter
+                .addFilterAfter(visitorTrackingFilter, RateLimitFilter.class)
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendRedirect("/index.html?error=forbidden");

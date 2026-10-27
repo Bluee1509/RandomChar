@@ -23,11 +23,27 @@ public class ActorController {
     }
 
     @GetMapping
-    @Cacheable(value = "actors", key = "'allActors'")
     public List<Actor> getAllActors() {
         // Sắp xếp theo thời gian tạo (mới nhất ở trên)
         System.out.println("------ ĐANG LẤY DỮ LIỆU TỪ DATABASE ------");
         return actorRepository.findAll(org.springframework.data.domain.Sort.by("createdAt").ascending());
+    }
+    // API MỚI: Hỗ trợ phân trang cho Dashboard
+    @GetMapping("/paginated")
+    public org.springframework.data.domain.Page<Actor> getActorsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean hasCode) {
+
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(
+                page, size, org.springframework.data.domain.Sort.by("createdAt").descending()
+        );
+
+        // Xử lý chuỗi rỗng
+        String searchKeyword = (search == null || search.trim().isEmpty()) ? null : search;
+
+        return actorRepository.searchAndFilter(searchKeyword, hasCode, pageable);
     }
 
     @GetMapping("/random")

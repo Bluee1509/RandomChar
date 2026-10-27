@@ -84,15 +84,24 @@ public class AuthController {
             if (existingUser.isEnabled()) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("message", "Tên đăng nhập đã được sử dụng và kích hoạt!"));
+            } else if ("BANNED".equals(existingUser.getOtpCode())) {
+                // Nếu OTP là BANNED -> Tài khoản đã bị Admin khóa
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Tài khoản này đã bị khóa bởi Quản trị viên. Vui lòng liên hệ Admin!"));
             } else {
+                // Nếu OTP không phải BANNED -> Đây là tài khoản rác chưa kích hoạt
                 userRepository.delete(existingUser);
             }
         }
+
         Optional<User> existingEmailOpt = userRepository.findByEmail(email);
         if (existingEmailOpt.isPresent()) {
             User existingUser = existingEmailOpt.get();
             if (existingUser.isEnabled()) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Email đã được sử dụng!"));
+            } else if ("BANNED".equals(existingUser.getOtpCode())) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Email này thuộc về tài khoản đã bị khóa!"));
             } else {
                 userRepository.delete(existingUser);
             }
