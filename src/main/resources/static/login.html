@@ -32,11 +32,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Sửa: Dùng min-height thay vì height để cho phép trang dài ra */
             color: var(--text-main);
-            overflow: hidden;
             position: relative;
             transition: background 1s ease;
+            overflow-x: hidden; /* Sửa: Bỏ overflow: hidden để cho phép cuộn trang */
         }
 
         .ambient-glow {
@@ -69,6 +69,7 @@
             max-width: 1100px;
             position: relative;
             z-index: 10;
+            padding: 20px; /* Thêm padding cho thoáng */
         }
 
         /* CSS ĐÈN */
@@ -81,6 +82,7 @@
             align-items: flex-end;
             z-index: 10;
             transition: transform 0.2s ease;
+            flex-shrink: 0; /* Ngăn đèn bị bóp méo */
         }
 
         .lamp-container:active {
@@ -136,25 +138,25 @@
         }
 
         @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-5px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         /* CSS FORM */
         .form-wrapper {
             position: relative;
             z-index: 5;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
 
         .auth-container {
             background-color: var(--bg-card);
             border-radius: 24px;
             border: 1px solid var(--border-color);
-            width: 440px;
+            width: 100%;
+            max-width: 440px; /* Giới hạn chiều rộng tối đa */
             padding: 45px 40px;
             opacity: 0;
             visibility: hidden;
@@ -222,14 +224,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .input-label {
@@ -290,7 +286,6 @@
             font-size: 16px;
         }
 
-        /* Gợi ý mật khẩu */
         .password-hint {
             font-size: 11px;
             color: var(--text-sub);
@@ -368,7 +363,7 @@
             align-items: center;
             gap: 10px;
         }
-        /* CSS cho hiệu ứng Loading */
+
         .spinner {
             width: 16px;
             height: 16px;
@@ -602,23 +597,40 @@
             margin-bottom: 10px;
         }
 
+        /* --- SỬA LỖI RESPONSIVE CHO MOBILE --- */
         @media (max-width: 900px) {
+            body {
+                align-items: flex-start; /* Đẩy nội dung lên trên cùng để cuộn được từ đầu */
+                padding: 20px 0; /* Tạo khoảng trống trên dưới */
+                height: auto; /* Cho phép body tự kéo dài */
+                overflow-y: auto; /* Bật cuộn dọc */
+            }
+
             .main-wrapper {
                 flex-direction: column;
-                gap: 20px;
+                gap: 10px;
+                padding: 0 15px; /* Thêm padding 2 bên để form không sát mép */
             }
 
             .lamp-container {
-                transform: scale(0.8);
-                height: 350px;
-                margin-bottom: -30px;
+                width: 100%;
+                height: 280px; /* Thu nhỏ chiều cao đèn để tiết kiệm diện tích */
+                margin-bottom: 0;
+                transform: none; /* Bỏ scale để tránh lỗi hiển thị */
             }
 
             .auth-container {
-                width: 90vw;
-                max-width: 400px;
+                width: 100%; /* Form chiếm toàn bộ chiều rộng cho phép */
+                max-width: 100%;
                 padding: 30px 20px;
             }
+
+            /* Nếu bạn muốn form hiển thị luôn trên mobile mà không cần bấm kéo đèn, hãy bỏ comment 3 dòng dưới */
+            /*
+            .auth-container {
+                opacity: 1; visibility: visible; transform: translateX(0); filter: blur(0); pointer-events: auto;
+            }
+            */
         }
     </style>
 </head>
