@@ -22,6 +22,7 @@
             --border-color: #222222;
             --danger: #ef4444;
 
+            /* CÔNG THỨC CO GIÃN Y HỆT PRODUCTION */
             --card-w: clamp(140px, min(16vw, calc((100dvh - 280px) / 1.45)), 380px);
         }
 
@@ -98,9 +99,9 @@
         .user-dropdown-container {
             position: relative;
             display: none;
-            width: fit-content; /* Ôm khít nội dung */
+            width: fit-content;
         }
-        /* Nút Đăng nhập cho Khách */
+
         .btn-login-nav {
             background: var(--accent);
             color: #fff;
@@ -110,12 +111,14 @@
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s ease;
-            display: none; /* Mặc định ẩn, JS sẽ bật lên nếu chưa login */
+            display: none;
         }
+
         .btn-login-nav:hover {
             background: var(--accent-hover);
             box-shadow: 0 0 10px var(--accent-glow);
         }
+
         .user-btn {
             display: flex;
             align-items: center;
@@ -153,15 +156,18 @@
             position: absolute;
             top: calc(100% + 8px);
             right: 0;
-            background: #141414; /* Hoặc #171a21 nếu ở dashboard */
+            background: #141414;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            width: max-content; /* Tự động co giãn theo nội dung */
-            min-width: 140px;   /* Độ rộng tối thiểu cho đẹp */
+            width: max-content;
+            min-width: 140px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            opacity: 0; visibility: hidden; transform: translateY(-10px);
-            transition: all 0.2s ease; z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 1000;
         }
 
         .dropdown-menu.active {
@@ -375,10 +381,11 @@
             z-index: 3;
         }
 
+        /* Tăng chiều cao ảnh lên 160% để bù lại phần khung đen đã mất */
         .card-thumbnail {
             position: relative;
             width: 100%;
-            padding-top: 140%;
+            padding-top: 160%;
             background-color: #0a0a0a;
             overflow: hidden;
         }
@@ -392,36 +399,35 @@
             object-fit: cover;
         }
 
-        .card-badge {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-
+        /* Lớp phủ mờ dần ở dưới đáy ảnh */
         .card-info {
-            padding: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px 10px 12px 10px;
             text-align: center;
-            background: #111;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 60%, transparent 100%);
+            z-index: 2;
+            pointer-events: none;
         }
 
         .card-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #ddd;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            transition: all 0.25s ease;
+            pointer-events: auto;
         }
 
-        .card-role {
-            font-size: 11px;
-            color: #666;
-            margin-top: 2px;
+        .card:hover .card-name {
+            color: var(--accent);
+            transform: scale(1.05) translateY(-2px);
         }
 
         .card.active-roll {
@@ -746,7 +752,7 @@
         .skeleton-thumbnail {
             position: relative;
             width: 100%;
-            padding-top: 140%;
+            padding-top: 160%; /* Đồng bộ chiều cao */
             background: linear-gradient(90deg, #111 0%, #222 50%, #111 100%);
             background-size: 200% 100%;
             animation: skeletonShimmer 1.4s infinite;
@@ -772,11 +778,6 @@
         .skeleton-line.name {
             width: 75%;
             height: 14px;
-        }
-
-        .skeleton-line.role {
-            width: 45%;
-            height: 10px;
         }
 
         @keyframes skeletonShimmer {
@@ -843,8 +844,6 @@
             .user-btn span.username {
                 display: none;
             }
-
-            /* Ẩn tên trên mobile, chỉ hiện avatar */
         }
 
         @media (max-width: 640px) {
@@ -892,6 +891,7 @@
                 height: 160px;
             }
         }
+
         .modal-name,
         .info-val,
         .code-tag,
@@ -915,10 +915,8 @@
             <input type="text" id="search-input" placeholder="Tìm kiếm diễn viên..." oninput="handleSearch(this.value)">
         </div>
 
-        <!-- NÚT ĐĂNG NHẬP (Dành cho khách) -->
         <a href="/login.html" class="btn-login-nav" id="btn-login-nav">Đăng Nhập</a>
 
-        <!-- KHU VỰC USER (Dành cho người đã đăng nhập) -->
         <div class="user-dropdown-container" id="userContainer">
             <div class="user-btn" onclick="toggleDropdown(event)">
                 <div class="user-avatar" id="userAvatar">U</div>
@@ -1003,7 +1001,6 @@
         try {
             const res = await fetch('/api/auth/me');
             if (res.ok) {
-                // Đã đăng nhập
                 const data = await res.json();
                 currentUser = data.username;
                 document.getElementById('username-display').innerText = data.username;
@@ -1012,12 +1009,10 @@
                 userContainer.style.display = 'inline-block';
                 loginBtn.style.display = 'none';
             } else {
-                // Chưa đăng nhập (Khách)
                 userContainer.style.display = 'none';
                 loginBtn.style.display = 'inline-block';
             }
         } catch (e) {
-            // Lỗi hoặc chưa đăng nhập
             userContainer.style.display = 'none';
             loginBtn.style.display = 'inline-block';
         }
@@ -1028,7 +1023,6 @@
         document.getElementById('userDropdown').classList.toggle('active');
     }
 
-    // Click ra ngoài để đóng dropdown
     document.addEventListener('click', function (event) {
         const container = document.getElementById('userContainer');
         const dropdown = document.getElementById('userDropdown');
@@ -1189,16 +1183,13 @@
         const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
         displayList.forEach((actor) => {
-            const calculatedAge = actor.age != null ? `${actor.age} tuổi` : (actor.birthYear ? `${currentYear - actor.birthYear} tuổi` : '---');
             cardsHtml += `
                 <div class="card" id="card-${actor.id}" onclick="openModal('${actor.id}')">
                     <div class="card-thumbnail">
                         <img src="${actor.imageUrl || fallbackImg}" alt="${actor.name}" onerror="this.src='${fallbackImg}'">
-                        <span class="card-badge">${calculatedAge}</span>
                     </div>
                     <div class="card-info">
                         <div class="card-name" title="${actor.name}">${actor.name}</div>
-                        <div class="card-role">Diễn viên</div>
                     </div>
                 </div>
             `;
@@ -1223,7 +1214,7 @@
         const carousel = document.getElementById('carousel');
         carousel.innerHTML = '';
         for (let i = 0; i < count; i++) {
-            carousel.innerHTML += `<div class="skeleton-card"><div class="skeleton-thumbnail"></div><div class="skeleton-info"><div class="skeleton-line name"></div><div class="skeleton-line role"></div></div></div>`;
+            carousel.innerHTML += `<div class="skeleton-card"><div class="skeleton-thumbnail"></div><div class="skeleton-info"><div class="skeleton-line name"></div></div></div>`;
         }
         document.getElementById('btn-roll').disabled = true;
         document.getElementById('status-msg').innerText = 'Đang tải...';
@@ -1293,12 +1284,12 @@
 
     // LỊCH SỬ QUAY
     async function saveHistory(actor) {
-        if (!currentUser) return; // Không lưu nếu chưa đăng nhập
+        if (!currentUser) return;
         try {
             await fetch('/api/history', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ actorName: actor.name, actorImageUrl: actor.imageUrl })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({actorName: actor.name, actorImageUrl: actor.imageUrl})
             });
         } catch (e) {
             console.error("Lỗi lưu lịch sử:", e);
@@ -1327,23 +1318,19 @@
 
                     historyList.innerHTML = history.map(item => {
                         let timeStr = "Không xác định";
-
                         if (item.spinTime) {
-                            // 1. Xử lý chuỗi: Cắt bỏ phần [Asia/Ho_Chi_Minh] nếu có
                             let rawDate = item.spinTime;
                             if (typeof rawDate === 'string' && rawDate.includes('[')) {
                                 rawDate = rawDate.split('[')[0];
                             }
-
-                            // 2. Tạo đối tượng Date
                             const date = new Date(rawDate);
-
-                            // 3. Kiểm tra xem Date có hợp lệ không (tránh lỗi Invalid Date)
                             if (!isNaN(date.getTime())) {
-                                timeStr = date.toLocaleTimeString('vi-VN', {hour: '2-digit', minute: '2-digit'}) + ' - ' + date.toLocaleDateString('vi-VN');
+                                timeStr = date.toLocaleTimeString('vi-VN', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                }) + ' - ' + date.toLocaleDateString('vi-VN');
                             }
                         }
-
                         return `
                         <div class="history-item">
                             <img src="${item.actorImageUrl || fallbackImg}" alt="${item.actorName}">

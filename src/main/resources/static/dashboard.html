@@ -16,8 +16,9 @@
             --text-main: #ffffff;
             --text-sub: #9ca3af;
             --border: #272c38;
-            --primary: #ff7700;
-            --primary-hover: #ff8c1a;
+            /* ĐÃ ĐỔI MÀU CHỦ ĐẠO */
+            --primary: #ff3366;
+            --primary-hover: #ff5c85;
             --danger: #ef4444;
             --success: #10b981;
             --info: #3b82f6;
@@ -43,7 +44,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Ẩn mũi tên lên xuống ở input number */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -82,7 +82,6 @@
             width: var(--sidebar-collapsed-width);
         }
 
-        /* Header chỉ chứa Logo */
         .sidebar-header {
             height: 70px;
             display: flex;
@@ -108,7 +107,6 @@
             border-radius: 4px;
         }
 
-        /* Khu vực Menu (bao gồm cả nút điều khiển) */
         .menu {
             padding: 15px 10px;
             display: flex;
@@ -117,14 +115,13 @@
             flex: 1;
         }
 
-        /* Cụm nút điều khiển đưa xuống dưới */
         .sidebar-controls {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 15px;
-            padding-left: 6px; /* Căn lề cho bằng với menu-item */
-            border-bottom: 1px solid var(--border); /* Đường kẻ phân cách */
+            padding-left: 6px;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 15px;
         }
 
@@ -168,12 +165,11 @@
         }
 
         .menu-item.active {
-            background: rgba(255, 119, 0, 0.1);
+            background: rgba(255, 51, 102, 0.1); /* Đã đổi sang nền hồng mờ */
             color: var(--primary);
             border-left: 3px solid var(--primary);
         }
 
-        /* Cấu hình khi thu gọn (Sidebar Collapsed) */
         .sidebar.collapsed .logo span,
         .sidebar.collapsed .menu-item span {
             display: none;
@@ -263,17 +259,6 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            margin-left: 10px;
-            border-left: 1px solid var(--border);
-            padding-left: 15px;
-        }
-
         .avatar {
             width: 36px;
             height: 36px;
@@ -308,7 +293,6 @@
             }
         }
 
-        /* Thẻ thống kê & Biểu đồ */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -360,7 +344,7 @@
             padding: 24px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            min-width: 0; /* Thêm dòng này để ép Grid không bị tràn */
+            min-width: 0;
             position: relative;
         }
 
@@ -370,7 +354,6 @@
             font-weight: 700;
         }
 
-        /* --- TAB QUẢN LÝ DIỄN VIÊN --- */
         .actor-layout {
             display: grid;
             grid-template-columns: 380px 1fr;
@@ -462,7 +445,7 @@
 
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, #ff5500 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, #d91e4a 100%); /* Đã đổi màu */
             color: #fff;
             border: none;
             padding: 12px 20px;
@@ -475,7 +458,7 @@
         }
 
         .btn-submit:hover {
-            background: linear-gradient(135deg, var(--primary-hover) 0%, #ff6a00 100%);
+            background: linear-gradient(135deg, var(--primary-hover) 0%, #f04d72 100%); /* Đã đổi màu */
             transform: translateY(-1px);
         }
 
@@ -492,7 +475,6 @@
             display: none;
         }
 
-        /* Bảng */
         .toolbar {
             display: flex;
             justify-content: space-between;
@@ -611,7 +593,7 @@
         }
 
         .code-pill {
-            background: rgba(255, 119, 0, 0.15);
+            background: rgba(255, 51, 102, 0.15); /* Đã đổi sang nền hồng mờ */
             color: var(--primary);
             font-size: 10px;
             font-weight: 700;
@@ -663,7 +645,6 @@
             color: #fff;
         }
 
-        /* Phân trang */
         .pagination {
             display: flex;
             justify-content: flex-end;
@@ -691,7 +672,6 @@
             border-color: var(--primary);
         }
 
-        /* Toast */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -750,20 +730,109 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* --- ẨN THANH CUỘN TRIỆT ĐỂ --- */
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            display: none;
+        }
+
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- STYLE CHO DROPDOWN ADMIN --- */
+        .user-dropdown-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 2px solid var(--primary);
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 15px);
+            right: 0;
+            background-color: var(--bg-card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px;
+            width: max-content;
+            min-width: unset;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 9999;
+        }
+
+        .dropdown-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+            background-color: transparent;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        .dropdown-item.danger:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
     </style>
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-    <!-- Chỉ chứa Logo -->
     <div class="sidebar-header">
         <div class="logo">RANDOM<span>CHAR</span></div>
     </div>
 
-    <!-- Các mục menu và nút điều khiển -->
     <div class="menu">
-        <!-- Nút điều khiển đưa xuống đây, có đường phân cách -->
         <div class="sidebar-controls">
             <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
             <button class="sidebar-theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -787,10 +856,24 @@
         <h2>Dashboard</h2>
         <div class="header-actions">
             <a href="/" class="nav-btn">🌐 Trang Chủ</a>
-            <a href="/logout" class="nav-btn danger">🚪 Đăng xuất</a>
-            <div class="user-info">
-                <div class="avatar" id="userAvatar">A</div>
-                <span id="username-display">Admin</span>
+
+            <div class="user-dropdown-container" onclick="toggleAdminDropdown(event)">
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">A</div>
+                    <span style="font-size: 10px; margin-left: 5px; color: var(--text-sub);">▼</span>
+                </div>
+                <div class="dropdown-menu" id="adminDropdown">
+                    <div class="dropdown-header">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             style="color: var(--primary);">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span id="username-display">Admin</span>
+                    </div>
+                    <a href="/logout" class="dropdown-item danger">🚪 Đăng xuất</a>
+                </div>
             </div>
         </div>
     </div>
@@ -799,7 +882,7 @@
     <div class="page-content active" id="tab-overview">
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(255, 119, 0, 0.15); color: var(--primary);">🎬</div>
+                <div class="stat-icon" style="background: rgba(255, 51, 102, 0.15); color: var(--primary);">🎬</div>
                 <div class="stat-info"><h3>Tổng Diễn Viên</h3>
                     <p id="stat-actors">0</p></div>
             </div>
@@ -825,7 +908,7 @@
                 <div id="top-actors-list" style="display: flex; flex-direction: column; gap: 15px;"></div>
             </div>
         </div>
-        <!-- BIỂU ĐỒ LƯỢT TRUY CẬP MỚI THÊM -->
+
         <div class="charts-grid" style="grid-template-columns: 1fr; margin-top: 20px;">
             <div class="chart-box">
                 <h3>Lượt truy cập 30 ngày qua</h3>
@@ -837,7 +920,6 @@
     <!-- TAB 2: ACTORS -->
     <div class="page-content" id="tab-actors">
         <div class="actor-layout">
-            <!-- Form Thêm/Sửa (Trái) -->
             <div class="panel-card">
                 <h2 class="panel-title" id="form-heading">Thêm Diễn Viên Mới</h2>
                 <form id="actor-form" onsubmit="saveActor(event)">
@@ -877,7 +959,6 @@
                 </form>
             </div>
 
-            <!-- Danh sách (Phải) -->
             <div class="panel-card">
                 <div class="panel-title">
                     <span>Danh Sách Quản Lý</span>
@@ -918,7 +999,6 @@
                         </tr>
                         </thead>
                         <tbody id="actors-table-body">
-                        <!-- Rows rendered by JS -->
                         </tbody>
                     </table>
                 </div>
@@ -946,7 +1026,6 @@
                         <th>Email</th>
                         <th>Ngày tạo</th>
                         <th>Trạng thái</th>
-                        <!-- SỬA LỖI: Căn giữa cột Thao tác -->
                         <th style="width: 100px; text-align: center;">Thao tác</th>
                     </tr>
                     </thead>
@@ -960,23 +1039,20 @@
 <div id="toast-container"></div>
 
 <script>
-    // --- BIẾN TOÀN CỤC ---
     let allActors = [];
     let filteredActors = [];
     let currentPage = 1;
     const pageSize = 10;
     let selectedIds = new Set();
     let chartInstance = null;
-    let visitorChartInstance = null; // Thêm biến lưu instance biểu đồ mới
+    let visitorChartInstance = null;
     const currentYear = new Date().getFullYear();
 
-    // SỬA LỖI: Cấu hình font chữ và màu sắc mặc định cho Chart.js
-    Chart.defaults.color = '#9ca3af'; // Màu xám sáng (text-sub) để dễ đọc trên nền tối
+    Chart.defaults.color = '#9ca3af';
     Chart.defaults.font.family = "'Inter', sans-serif";
-    Chart.defaults.font.size = 13; // Tăng nhẹ kích thước chữ
-    Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)'; // Làm mờ lưới trục tọa độ
+    Chart.defaults.font.size = 13;
+    Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
 
-    // --- KHỞI TẠO ---
     document.addEventListener('DOMContentLoaded', () => {
         loadCurrentUser();
         loadStats();
@@ -986,20 +1062,17 @@
         loadActors();
         loadUsers();
 
-        // Dark/Light Mode
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-mode');
             document.getElementById('themeBtn').innerText = '☀️';
         }
 
-        // Thu gọn sidebar
         if (localStorage.getItem('sidebar-collapsed') === 'true') {
             document.getElementById('sidebar').classList.add('collapsed');
             document.getElementById('mainContent').classList.add('expanded');
         }
     });
 
-    // --- LOGIC SIDEBAR & TAB ---
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('mainContent');
@@ -1012,17 +1085,28 @@
         }, 310);
     }
 
+    function toggleAdminDropdown(event) {
+        event.stopPropagation();
+        document.getElementById('adminDropdown').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function (event) {
+        const container = document.querySelector('.user-dropdown-container');
+        const dropdown = document.getElementById('adminDropdown');
+        if (container && !container.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
         const isLight = document.body.classList.contains('light-mode');
         document.getElementById('themeBtn').innerText = isLight ? '☀️' : '🌙';
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
 
-        // SỬA LỖI: Đổi màu chữ Chart.js khi đổi theme
         Chart.defaults.color = isLight ? '#6b7280' : '#9ca3af';
         Chart.defaults.scale.grid.color = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
 
-        // Vẽ lại biểu đồ để nhận màu mới
         if (chartInstance) chartInstance.update();
         if (visitorChartInstance) visitorChartInstance.update();
     }
@@ -1047,7 +1131,6 @@
         }, 3000);
     }
 
-    // --- API CALLS (OVERVIEW) ---
     async function loadCurrentUser() {
         try {
             const res = await fetch('/api/auth/me');
@@ -1071,13 +1154,11 @@
         }
     }
 
-    // SỬA LỖI: Hàm tạo danh sách 7 ngày gần nhất và điền số 0 cho ngày khuyết
     async function loadChartData() {
         try {
             const res = await fetch('/api/admin/chart-data');
             const apiData = await res.json();
 
-            // Map dữ liệu từ API để dễ tra cứu
             const dataMap = {};
             apiData.forEach(item => {
                 const d = new Date(item.date);
@@ -1089,14 +1170,13 @@
             const values = [];
             const today = new Date();
 
-            // Lấy dữ liệu 7 ngày qua (tính cả hôm nay)
             for (let i = 6; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(today.getDate() - i);
                 const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
                 labels.push(d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit'}));
-                values.push(dataMap[key] || 0); // Nếu không có data thì là 0
+                values.push(dataMap[key] || 0);
             }
 
             const ctx = document.getElementById('activityChart').getContext('2d');
@@ -1109,9 +1189,9 @@
                     datasets: [{
                         label: 'Lượt quay',
                         data: values,
-                        backgroundColor: '#ff7700',
+                        backgroundColor: '#ff3366', // ĐÃ ĐỔI MÀU SANG HỒNG
                         borderRadius: 6,
-                        barPercentage: 0.6 // Chỉnh độ rộng cột cho đẹp hơn
+                        barPercentage: 0.6
                     }]
                 },
                 options: {
@@ -1130,13 +1210,11 @@
         }
     }
 
-    // SỬA LỖI: Hàm tạo danh sách 30 ngày và điền 0 cho ngày khuyết
     async function loadVisitorChartData() {
         try {
             const res = await fetch('/api/admin/visitor-chart-data');
             const apiData = await res.json();
 
-            // Map dữ liệu từ API
             const dataMap = {};
             apiData.forEach(item => {
                 const d = new Date(item.date);
@@ -1148,7 +1226,6 @@
             const values = [];
             const today = new Date();
 
-            // Lấy dữ liệu 30 ngày qua
             for (let i = 29; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(today.getDate() - i);
@@ -1168,12 +1245,12 @@
                     datasets: [{
                         label: 'Người truy cập',
                         data: values,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: '#ff3366', // ĐÃ ĐỔI MÀU SANG HỒNG
+                        backgroundColor: 'rgba(255, 51, 102, 0.2)', // ĐÃ ĐỔI MÀU SANG HỒNG
                         fill: true,
-                        tension: 0.3, // Độ cong của đường
+                        tension: 0.3,
                         pointRadius: 4,
-                        pointBackgroundColor: '#3b82f6',
+                        pointBackgroundColor: '#ff3366', // ĐÃ ĐỔI MÀU SANG HỒNG
                         pointBorderColor: '#fff'
                     }]
                 },
@@ -1183,7 +1260,7 @@
                     scales: {
                         x: {
                             ticks: {
-                                maxTicksLimit: 10 // Giới hạn hiển thị 10 nhãn để không bị chữ đè lên nhau
+                                maxTicksLimit: 10
                             }
                         },
                         y: {
@@ -1218,7 +1295,6 @@
         }
     }
 
-    // --- API CALLS (ACTORS) ---
     async function loadActors() {
         try {
             const res = await fetch('/api/actors');
@@ -1269,7 +1345,6 @@
             const isChecked = selectedIds.has(actor.id) ? 'checked' : '';
             const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80';
 
-            // Xử lý code
             let codesHtml = '';
             if (actor.famousCode) {
                 const codes = actor.famousCode.split(',').map(c => c.trim()).filter(c => c.length > 0);
@@ -1318,7 +1393,6 @@
         renderActorsTable();
     }
 
-    // --- FORM ACTOR LOGIC ---
     function calculateAgePreview(yearVal) {
         const hint = document.getElementById('age-preview');
         const year = parseInt(yearVal);
@@ -1367,7 +1441,6 @@
         document.getElementById('btn-submit-form').innerText = '💾 Cập Nhật Thay Đổi';
         document.getElementById('btn-cancel-edit').style.display = 'block';
 
-        // Cuộn lên form
         document.getElementById('tab-actors').scrollIntoView({behavior: 'smooth'});
     }
 
@@ -1429,7 +1502,7 @@
             if (res.ok) {
                 showToast("Đã xóa diễn viên");
                 selectedIds.delete(id);
-                if (document.getElementById('actor-id').value === id) resetForm(); // Nếu đang sửa thì reset
+                if (document.getElementById('actor-id').value === id) resetForm();
                 loadActors();
                 loadStats();
             }
@@ -1438,7 +1511,6 @@
         }
     }
 
-    // --- CHỌN HÀNG LOẠT ---
     function toggleSelect(id, isChecked) {
         if (isChecked) selectedIds.add(id);
         else selectedIds.delete(id);
@@ -1473,7 +1545,6 @@
         }
     }
 
-    // --- XUẤT / NHẬP FILE (HỖ TRỢ CẢ EXCEL VÀ CSV) ---
     function exportCSV() {
         if (filteredActors.length === 0) return showToast("Không có dữ liệu để xuất", "error");
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
@@ -1498,16 +1569,13 @@
             try {
                 let jsonData = [];
 
-                // Xử lý nếu là file CSV
                 if (file.name.endsWith('.csv')) {
                     const text = e.target.result;
                     const workbook = XLSX.read(text, {type: 'string'});
                     const firstSheetName = workbook.SheetNames[0];
                     const worksheet = workbook.Sheets[firstSheetName];
                     jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-                }
-                // Xử lý nếu là file Excel
-                else {
+                } else {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
                     const firstSheetName = workbook.SheetNames[0];
@@ -1515,7 +1583,6 @@
                     jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
                 }
 
-                // Bỏ qua dòng đầu tiên (tiêu đề)
                 const dataRows = jsonData.slice(1);
 
                 let successCount = 0;
@@ -1524,11 +1591,10 @@
 
                 showToast(`Đang xử lý ${dataRows.length} dòng...`, 'info');
 
-                // Tạo Set chứa các diễn viên hiện có (Tên + Năm sinh) để check trùng
                 const existingKeys = new Set(allActors.map(a => `${a.name.toLowerCase()}_${a.birthYear}`));
 
                 for (let row of dataRows) {
-                    if (!row || row.length === 0 || !row[0]) continue; // Bỏ qua dòng trống
+                    if (!row || row.length === 0 || !row[0]) continue;
 
                     const name = String(row[0]).trim();
                     const birthYear = parseInt(row[1]) || null;
@@ -1538,13 +1604,11 @@
 
                     const key = `${name.toLowerCase()}_${birthYear}`;
 
-                    // 1. Kiểm tra trùng lặp
                     if (existingKeys.has(key)) {
                         skippedCount++;
-                        continue; // Bỏ qua không thêm
+                        continue;
                     }
 
-                    // 2. Nếu không trùng, gọi API thêm mới
                     try {
                         const res = await fetch('/api/actors', {
                             method: 'POST',
@@ -1553,25 +1617,23 @@
                         });
                         if (res.ok) {
                             successCount++;
-                            existingKeys.add(key); // Thêm vào Set để tránh trùng trong cùng file
+                            existingKeys.add(key);
                         } else {
                             failCount++;
                         }
                     } catch (err) {
                         failCount++;
                     }
-                    // Nghỉ 300ms để tránh Rate Limit của Backend
                     await new Promise(resolve => setTimeout(resolve, 300));
                 }
 
-                // Thông báo kết quả
                 let msg = `Nhập hoàn tất! Thành công: ${successCount}.`;
                 if (skippedCount > 0) msg += ` Bỏ qua trùng: ${skippedCount}.`;
                 if (failCount > 0) msg += ` Lỗi: ${failCount}.`;
 
                 showToast(msg, successCount > 0 ? 'success' : 'error');
 
-                event.target.value = ''; // Reset input file
+                event.target.value = '';
                 loadActors();
                 loadStats();
 
@@ -1582,7 +1644,6 @@
             }
         };
 
-        // Đọc file dạng ArrayBuffer hoặc Text tùy theo đuôi file
         if (file.name.endsWith('.csv')) {
             reader.readAsText(file);
         } else {
@@ -1590,7 +1651,6 @@
         }
     }
 
-    // --- TAB USERS ---
     async function loadUsers() {
         try {
             const res = await fetch('/api/admin/users');
@@ -1610,7 +1670,6 @@
                         <td>${u.email}</td>
                         <td>${date}</td>
                         <td style="${statusClass}">${statusText}</td>
-                        <!-- SỬA LỖI: Căn giữa nút bấm -->
                         <td style="text-align: center;">
                             <button class="btn-sm" style="background: ${btnColor}; color: #fff; width: 75px;" onclick="toggleUserStatus('${u.id}')">${btnText}</button>
                         </td>
