@@ -1,7 +1,9 @@
 package com.example.randomchar.Controller;
 
+import com.example.randomchar.Entity.Actor;
 import com.example.randomchar.Entity.SpinHistory;
 import com.example.randomchar.Entity.User;
+import com.example.randomchar.Repository.ActorRepository;
 import com.example.randomchar.Repository.SpinHistoryRepository;
 import com.example.randomchar.Repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/history")
@@ -17,10 +20,13 @@ import java.util.Map;
 public class HistoryController {
     private final SpinHistoryRepository historyRepository;
     private final UserRepository userRepository;
+    private final ActorRepository actorRepository; // Thêm ActorRepository
 
-    public HistoryController(SpinHistoryRepository historyRepository, UserRepository userRepository) {
+    // Cập nhật Constructor để inject ActorRepository
+    public HistoryController(SpinHistoryRepository historyRepository, UserRepository userRepository, ActorRepository actorRepository) {
         this.historyRepository = historyRepository;
         this.userRepository = userRepository;
+        this.actorRepository = actorRepository;
     }
 
     @PostMapping
@@ -32,14 +38,35 @@ public class HistoryController {
         User user = userRepository.findByUsername(authentication.getName()).orElse(null);
         if (user == null) return ResponseEntity.badRequest().body(Map.of("message", "User không tồn tại"));
 
-        SpinHistory history = SpinHistory.builder()
-                .user(user)
-                .actorName(request.get("actorName"))
-                .actorImageUrl(request.get("actorImageUrl"))
-                .build();
+        // Lấy actorId từ request Frontend gửi lên
+        String actorIdStr = request.get("actorId");
+        if (actorIdStr == null || actorIdStr.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Thiếu ID diễn viên"));
+        }
 
-        historyRepository.save(history);
-        return ResponseEntity.ok(Map.of("message", "Đã lưu lịch sử"));
+        try {
+            // Tìm diễn viên trong Database
+            UUID actorId = UUID.fromString(actorIdStr);
+            Actor actor = actorRepository.findById(actorId).orElse(null);
+
+            if (actor == null) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Diễn viên không tồn tại"));
+            }
+
+            // Tạo lịch sử bằng cách lấy thông tin mới nhất từ DB (thay vì lấy từ Frontend)
+            SpinHistory history = SpinHistory.builder()
+                    .user(user)
+                    .actorName(actor.getName())
+                    .actorImageUrl(actor.getImageUrl())
+                    .build();
+
+            historyRepository.save(history);
+            return ResponseEntity.ok(Map.of("message", "Đã lưu lịch sử"));
+
+        } catch (IllegalArgumentException e) {
+            // Xử lý trường hợp actorId không phải là UUID hợp lệ
+            return ResponseEntity.badRequest().body(Map.of("message", "ID diễn viên không hợp lệ"));
+        }
     }
 
     @GetMapping

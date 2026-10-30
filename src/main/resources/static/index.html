@@ -92,7 +92,7 @@
             position: relative;
             flex-shrink: 0;
             height: 65px;
-            z-index: 10;
+            z-index: 100;
         }
 
         .logo {
@@ -191,7 +191,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             width: max-content;
-            min-width: 140px;
+            min-width: 160px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             opacity: 0;
@@ -207,6 +207,19 @@
             transform: translateY(0);
         }
 
+        /* CSS CHO HEADER CỦA DROPDOWN (Chứa username) */
+        .dropdown-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #111;
+        }
+
         .dropdown-item {
             padding: 12px 16px;
             font-size: 14px;
@@ -215,12 +228,24 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.2s;
             cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
         }
 
         .dropdown-item:hover {
             background: #1f1f1f;
+        }
+
+        /* Hiệu ứng khi tab Yêu thích đang được bật */
+        .dropdown-item.active {
+            color: var(--accent);
+            background: rgba(255, 51, 102, 0.1);
+            font-weight: 700;
         }
 
         .dropdown-item.danger {
@@ -395,19 +420,15 @@
         /* --- FIX LỖI TRÀN VIỀN VÀ CHÌM NỀN --- */
         .card {
             flex: 0 0 var(--card-w);
-            /* Tăng độ sáng nền thẻ để không bị chìm */
             background-color: #15171e;
-            /* Thêm viền sáng để tách biệt khỏi nền web */
             border: 1px solid #2a2d37;
             border-radius: 6px;
-            overflow: hidden; /* Đưa overflow: hidden vào đây để ép ảnh không tràn */
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
             cursor: pointer;
             transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-
-            /* Tăng tốc phần cứng tránh lỗi render khi lướt */
             will-change: transform;
             transform: translateZ(0);
         }
@@ -424,18 +445,16 @@
             width: 100%;
             aspect-ratio: 10 / 16;
             background-color: #0a0a0a;
-            /* Không dùng overflow ở đây nữa */
         }
 
         .card-thumbnail img {
             position: absolute;
-            top: -1px; /* Kéo ảnh lên trên 1px */
-            left: -1px; /* Kéo ảnh sang trái 1px */
-            width: calc(100% + 2px); /* Tăng chiều rộng lên 2px */
-            height: calc(100% + 2px); /* Tăng chiều cao lên 2px */
+            top: -1px;
+            left: -1px;
+            width: calc(100% + 2px);
+            height: calc(100% + 2px);
             object-fit: cover;
-            display: block; /* Khử khoảng trắng thừa của thẻ inline */
-            /* Xóa bỏ transform: scale(1.01); */
+            display: block;
         }
 
         .card-info {
@@ -445,7 +464,6 @@
             width: 100%;
             padding: 40px 10px 12px 10px;
             text-align: center;
-            /* Gradient đậm hơn để tách biệt chữ khỏi ảnh */
             background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%);
             z-index: 2;
             pointer-events: none;
@@ -471,22 +489,18 @@
 
         .card.active-roll {
             border-color: transparent !important;
-            /* Viền mỏng 1px + Tỏa sáng nhẹ */
-            box-shadow:
-                    0 0 0 1px var(--accent),
-                    0 0 15px var(--accent-glow) !important;
+            box-shadow: 0 0 0 1px var(--accent),
+            0 0 15px var(--accent-glow) !important;
             transform: scale(1.06) translateZ(0) !important;
             z-index: 4 !important;
         }
 
         .card.winner {
             border-color: transparent !important;
-            /* Viền mỏng 1px + 3 lớp tỏa sáng gradient lan dần ra ngoài */
-            box-shadow:
-                    0 0 0 1px var(--accent),
-                    0 0 10px var(--accent),
-                    0 0 25px var(--accent-glow),
-                    0 0 45px rgba(255, 51, 102, 0.3) !important;
+            box-shadow: 0 0 0 1px var(--accent),
+            0 0 10px var(--accent),
+            0 0 25px var(--accent-glow),
+            0 0 45px rgba(255, 51, 102, 0.3) !important;
             transform: scale(1.1) translateZ(0) !important;
             z-index: 5 !important;
             animation: pulseGlow 1.2s infinite alternate, winnerShake 0.5s ease-in-out 3;
@@ -510,18 +524,16 @@
 
         @keyframes pulseGlow {
             0% {
-                box-shadow:
-                        0 0 0 1px var(--accent),
-                        0 0 8px var(--accent-glow),
-                        0 0 15px var(--accent-glow),
-                        0 0 25px rgba(255, 51, 102, 0.1);
+                box-shadow: 0 0 0 1px var(--accent),
+                0 0 8px var(--accent-glow),
+                0 0 15px var(--accent-glow),
+                0 0 25px rgba(255, 51, 102, 0.1);
             }
             100% {
-                box-shadow:
-                        0 0 0 1px var(--accent),
-                        0 0 15px var(--accent),
-                        0 0 35px var(--accent-glow),
-                        0 0 60px rgba(255, 51, 102, 0.4);
+                box-shadow: 0 0 0 1px var(--accent),
+                0 0 15px var(--accent),
+                0 0 35px var(--accent-glow),
+                0 0 60px rgba(255, 51, 102, 0.4);
             }
         }
 
@@ -847,6 +859,33 @@
             }
         }
 
+        /* CSS CHO TÍNH NĂNG YÊU THÍCH */
+        .card-thumbnail .btn-fav {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            pointer-events: auto;
+        }
+
+        .card-thumbnail .btn-fav:hover {
+            transform: scale(1.15);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             header {
@@ -897,10 +936,6 @@
 
             .user-btn {
                 padding: 4px 8px;
-            }
-
-            .user-btn span.username {
-                display: none;
             }
         }
 
@@ -987,17 +1022,40 @@
         <div class="user-dropdown-container" id="userContainer">
             <div class="user-btn" onclick="toggleDropdown(event)">
                 <div class="user-avatar" id="userAvatar">U</div>
-                <span class="username" id="username-display">User</span>
+                <!-- Đã bỏ span username ở đây, chỉ hiển thị avatar và mũi tên -->
                 <span style="font-size: 10px;">▼</span>
             </div>
+
             <div class="dropdown-menu" id="userDropdown">
-                <a href="/logout?redirect=index" class="dropdown-item danger">
-                    🚪 Đăng xuất
-                </a>
+                <!-- PHẦN HEADER CỦA DROPDOWN: Hiển thị Username & Avatar -->
+                <div class="dropdown-header">
+                    <div class="user-avatar" id="dropdownAvatar" style="width: 20px; height: 20px; font-size: 10px;">U
+                    </div>
+                    <span id="dropdownUsername">User</span>
+                </div>
+
+                <!-- Nút Lịch sử -->
+                <div class="dropdown-item" id="btn-history" onclick="openHistoryModal()" title="Lịch sử quay">
+                    📜 Lịch sử quay
+                </div>
+
+                <!-- Nút Yêu thích -->
+                <div class="dropdown-item" id="btn-favorites-tab" onclick="toggleViewFavorites()"
+                     title="Danh sách yêu thích">
+                    <span id="fav-icon" style="margin-right: 8px;">🤍</span> Yêu thích
+                </div>
+
+                <!-- Nút Đăng xuất -->
+                <form action="/logout" method="POST"
+                      style="margin: 0; padding: 0; width: 100%; border-top: 1px solid var(--border-color);">
+                    <input type="hidden" name="redirect" value="index">
+                    <button type="submit" class="dropdown-item danger" style="border-top: none;">
+                        🚪 Đăng xuất
+                    </button>
+                </form>
             </div>
         </div>
 
-        <button class="btn-icon" id="btn-history" onclick="openHistoryModal()" title="Lịch sử quay">📜</button>
         <!-- Nút Âm thanh -->
         <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Bật/Tắt âm thanh & nhạc nền">🔊</button>
     </div>
@@ -1059,6 +1117,8 @@
     let displayList = [];
     let isRolling = false;
     let currentUser = null;
+    let favoriteIds = new Set(); // Biến lưu danh sách ID yêu thích
+    let isViewingFavorites = false; // Cờ đánh dấu đang xem tab yêu thích
     const currentYear = new Date().getFullYear();
     let soundEnabled = true, audioCtx = null;
 
@@ -1250,7 +1310,7 @@
         }
     }
 
-    // --- LOGIC USER DROPDOWN ---
+    // --- LOGIC USER DROPDOWN & FAVORITES ---
     async function loadCurrentUser() {
         const loginBtn = document.getElementById('btn-login-nav');
         const userContainer = document.getElementById('userContainer');
@@ -1260,11 +1320,18 @@
             if (res.ok) {
                 const data = await res.json();
                 currentUser = data.username;
-                document.getElementById('username-display').innerText = data.username;
-                document.getElementById('userAvatar').innerText = data.username.charAt(0).toUpperCase();
+
+                // Cập nhật Avatar và Username (cả ngoài nút và trong dropdown)
+                const initial = data.username.charAt(0).toUpperCase();
+                document.getElementById('userAvatar').innerText = initial;
+                document.getElementById('dropdownAvatar').innerText = initial;
+                document.getElementById('dropdownUsername').innerText = data.username;
 
                 userContainer.style.display = 'inline-block';
                 loginBtn.style.display = 'none';
+
+                // Tải danh sách yêu thích nếu đã đăng nhập
+                await loadFavorites();
             } else {
                 userContainer.style.display = 'none';
                 loginBtn.style.display = 'inline-block';
@@ -1273,6 +1340,89 @@
             userContainer.style.display = 'none';
             loginBtn.style.display = 'inline-block';
         }
+    }
+
+    // Hàm tải danh sách ID yêu thích từ API
+    async function loadFavorites() {
+        if (!currentUser) return;
+        try {
+            const res = await fetch('/api/favorites');
+            if (res.ok) {
+                const data = await res.json();
+                favoriteIds = new Set(data.map(id => String(id)));
+                renderActors(); // Render lại để cập nhật icon tim
+            }
+        } catch (e) {
+            console.error("Lỗi tải danh sách yêu thích:", e);
+        }
+    }
+
+    // Hàm xử lý khi click vào trái tim
+    async function toggleFavorite(event, actorId) {
+        event.stopPropagation(); // Ngăn mở Modal chi tiết
+
+        if (!currentUser) {
+            alert("Vui lòng đăng nhập để thêm vào danh sách yêu thích!");
+            return;
+        }
+
+        const idStr = String(actorId);
+        const isFav = favoriteIds.has(idStr);
+
+        // Cập nhật UI ngay lập tức (Optimistic UI)
+        if (isFav) {
+            favoriteIds.delete(idStr);
+            if (isViewingFavorites) {
+                displayList = displayList.filter(a => String(a.id) !== idStr);
+            }
+        } else {
+            favoriteIds.add(idStr);
+        }
+
+        // GỌI HÀM RENDER VỚI FORCE CENTER = FALSE (Để không bị nhảy trang)
+        renderActors(false);
+
+        // Gọi API lưu vào Database
+        try {
+            if (isFav) {
+                await fetch(`/api/favorites/${actorId}`, {method: 'DELETE'});
+            } else {
+                await fetch(`/api/favorites/${actorId}`, {method: 'POST'});
+            }
+        } catch (err) {
+            console.error("Lỗi lưu yêu thích:", err);
+            // Hoàn tác nếu API lỗi
+            if (isFav) favoriteIds.add(idStr);
+            else favoriteIds.delete(idStr);
+
+            renderActors(false); // Cũng gọi false ở đây
+        }
+    }
+
+    // Hàm Bật/Tắt chế độ xem Yêu thích
+    function toggleViewFavorites() {
+        if (!currentUser) {
+            alert("Vui lòng đăng nhập để xem danh sách yêu thích!");
+            return;
+        }
+
+        isViewingFavorites = !isViewingFavorites;
+        const btn = document.getElementById('btn-favorites-tab');
+        const icon = document.getElementById('fav-icon');
+
+        if (isViewingFavorites) {
+            btn.classList.add('active');
+            icon.innerText = '❤️';
+            document.getElementById('search-input').value = ''; // Reset tìm kiếm khi chuyển tab
+        } else {
+            btn.classList.remove('active');
+            icon.innerText = '🤍';
+        }
+
+        // Đóng menu dropdown sau khi chọn
+        document.getElementById('userDropdown').classList.remove('active');
+
+        handleSearch(document.getElementById('search-input').value);
     }
 
     function toggleDropdown(event) {
@@ -1371,11 +1521,15 @@
         }
     }
 
-    function renderActors() {
+    // Cập nhật lại hàm render để hiển thị Trái tim và nhận tham số forceCenter
+    function renderActors(forceCenter = true) {
         const carousel = document.getElementById('carousel');
+        const currentScroll = carousel.scrollLeft; // Lưu lại vị trí cuộn hiện tại
+
         carousel.innerHTML = '';
         if (displayList.length === 0) {
-            carousel.innerHTML = '<div style="color: var(--text-sub); padding: 40px; margin: auto;">Không tìm thấy diễn viên nào.</div>';
+            const msg = isViewingFavorites ? 'Bạn chưa yêu thích diễn viên nào.' : 'Không tìm thấy diễn viên nào.';
+            carousel.innerHTML = `<div style="color: var(--text-sub); padding: 40px; margin: auto;">${msg}</div>`;
             document.getElementById('btn-roll').disabled = true;
             checkOverflow();
             return;
@@ -1385,10 +1539,19 @@
         const fallbackImg = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
 
         displayList.forEach((actor) => {
+            const isFav = favoriteIds.has(String(actor.id));
+            const heartIcon = isFav ? '❤️' : '🤍';
+
             cardsHtml += `
                 <div class="card" id="card-${actor.id}" onclick="openModal('${actor.id}')">
                     <div class="card-thumbnail">
                         <img src="${actor.imageUrl || fallbackImg}" alt="${actor.name}" onerror="this.src='${fallbackImg}'">
+
+                        <!-- Nút thả tim -->
+                        <button class="btn-fav" onclick="toggleFavorite(event, '${actor.id}')" title="Yêu thích">
+                            ${heartIcon}
+                        </button>
+
                         <div class="card-info">
                             <div class="card-name" title="${actor.name}">${actor.name}</div>
                         </div>
@@ -1398,16 +1561,32 @@
         });
         carousel.innerHTML = cardsHtml;
         checkOverflow();
-        setTimeout(() => centerCarousel(), 60);
+
+        // Chỉ căn giữa nếu forceCenter = true
+        if (forceCenter) {
+            setTimeout(() => centerCarousel(), 60);
+        } else {
+            // Sử dụng requestAnimationFrame để khôi phục vị trí cuộn mượt mà, không bị giật
+            requestAnimationFrame(() => {
+                carousel.scrollLeft = currentScroll;
+            });
+        }
     }
 
+    // Cập nhật hàm tìm kiếm để lọc theo tab Yêu thích
     function handleSearch(keyword) {
         if (isRolling) return;
         const lowerKw = keyword.toLowerCase().trim();
+
+        // Nếu đang ở tab yêu thích, chỉ tìm kiếm trong danh sách yêu thích
+        let baseList = isViewingFavorites
+            ? masterList.filter(a => favoriteIds.has(String(a.id)))
+            : masterList;
+
         if (!lowerKw) {
-            displayList = [...masterList];
+            displayList = [...baseList];
         } else {
-            displayList = masterList.filter(a => a.name.toLowerCase().includes(lowerKw));
+            displayList = baseList.filter(a => a.name.toLowerCase().includes(lowerKw));
         }
         renderActors();
     }
@@ -1484,14 +1663,14 @@
         if (e.target.id === 'actor-modal') closeModal();
     }
 
-    // LỊCH SỬ QUAY
+    // LỊCH SỬ QUAY (Đã sửa Mục 4: Chỉ gửi ID lên Backend)
     async function saveHistory(actor) {
         if (!currentUser) return;
         try {
             await fetch('/api/history', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({actorName: actor.name, actorImageUrl: actor.imageUrl})
+                body: JSON.stringify({actorId: actor.id}) // Chỉ gửi ID
             });
         } catch (e) {
             console.error("Lỗi lưu lịch sử:", e);
@@ -1499,6 +1678,9 @@
     }
 
     async function openHistoryModal() {
+        // Đóng menu dropdown sau khi chọn
+        document.getElementById('userDropdown').classList.remove('active');
+
         const historyList = document.getElementById('history-list');
         document.getElementById('history-modal').classList.add('active');
 
@@ -1577,7 +1759,9 @@
 
         let winnerIndex = -1;
         const isSearching = document.getElementById('search-input').value.trim() !== '';
-        if (!isSearching) {
+
+        // Chỉ gọi API Random của backend nếu đang không tìm kiếm VÀ không ở tab Yêu thích
+        if (!isSearching && !isViewingFavorites) {
             try {
                 const res = await fetch(`${API_URL}/random`);
                 if (res.ok && res.status !== 204) {
@@ -1651,9 +1835,11 @@
     loadCurrentUser();
     loadActors();
 
+    // Sự kiện keydown (Đã sửa Mục 3: bỏ qua phím cách nếu đang focus vào BUTTON)
     document.addEventListener('keydown', (e) => {
         const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(tag)) return;
+
         if ((e.code === 'Space' || e.code === 'Enter') && !isRolling) {
             e.preventDefault();
             startRandomRoll();

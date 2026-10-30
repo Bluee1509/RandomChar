@@ -110,6 +110,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/actors/**").permitAll()
                         .requestMatchers("/api/history/**").permitAll()
+                        .requestMatchers("/api/favorites/**").authenticated()
                         .requestMatchers("/dashboard.html").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/actors/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/actors/**").hasRole("ADMIN")
