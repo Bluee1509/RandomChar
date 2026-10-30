@@ -57,34 +57,26 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService databaseUserDetailsService() {
         return username -> userRepository.findByUsername(username)
-                .map(user -> User.builder()
-                        .username(user.getUsername())
-                        .password(user.getPassword())
-                        .disabled(!user.isEnabled())
-                        .roles("USER")
-                        .build())
+                .map(user -> {
+                    // Nếu username trùng với adminUsername trong env -> cấp quyền ADMIN
+                    String role = user.getUsername().equals(adminUsername) ? "ADMIN" : "USER";
+                    return User.builder()
+                            .username(user.getUsername())
+                            .password(user.getPassword())
+                            .disabled(!user.isEnabled())
+                            .roles(role)
+                            .build();
+                })
                 .orElseThrow(() -> new org.springframework.security.core.userdetails.UsernameNotFoundException("User not found"));
     }
 
     @Bean
-    public UserDetailsService adminUserDetailsService() {
-        var admin = User.builder()
-                .username(adminUsername)
-                .password(passwordEncoder().encode(adminPassword))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(admin);
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager() {
+        // Chỉ sử dụng Database Provider
         DaoAuthenticationProvider dbProvider = new DaoAuthenticationProvider(databaseUserDetailsService());
         dbProvider.setPasswordEncoder(passwordEncoder());
 
-        DaoAuthenticationProvider adminProvider = new DaoAuthenticationProvider(adminUserDetailsService());
-        adminProvider.setPasswordEncoder(passwordEncoder());
-
-        return new ProviderManager(dbProvider, adminProvider);
+        return new ProviderManager(dbProvider);
     }
 
     @Bean
