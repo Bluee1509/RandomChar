@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Thêm thư viện Three.js để làm nền 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
         :root {
             --bg-main: #0a0a0a;
@@ -22,7 +26,6 @@
             --border-color: #222222;
             --danger: #ef4444;
 
-            /* CÔNG THỨC CO GIÃN Y HỆT PRODUCTION */
             --card-w: clamp(140px, min(16vw, calc((100dvh - 280px) / 1.45)), 380px);
         }
 
@@ -35,7 +38,7 @@
 
         html, body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-main);
+            background-color: transparent;
             color: var(--text-main);
             height: 100vh;
             height: 100dvh;
@@ -52,11 +55,36 @@
         body {
             display: flex;
             flex-direction: column;
+            position: relative;
+            background-color: var(--bg-main); /* Nền dự phòng */
+        }
+
+        /* --- CSS CHO NỀN 3D VÀ NHẠC NỀN --- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0; /* Nằm trên màu nền body */
+            pointer-events: none;
+        }
+
+        .overlay-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Làm tối để nổi bật thẻ và tạo không gian */
+            background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 10, 0.85) 80%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* HEADER */
         header {
-            background-color: #000000;
+            background-color: transparent;
             border-bottom: 1px solid #222;
             padding: 0 24px;
             display: flex;
@@ -65,6 +93,7 @@
             position: relative;
             flex-shrink: 0;
             height: 65px;
+            z-index: 10;
         }
 
         .logo {
@@ -79,6 +108,8 @@
             padding: 4px 12px;
             border-radius: 4px;
             transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
         }
 
         .logo:hover {
@@ -123,7 +154,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: #141414;
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(5px);
             padding: 6px 12px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
@@ -238,7 +270,7 @@
         }
 
         .btn-icon {
-            background: transparent;
+            background: rgba(0, 0, 0, 0.5);
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -250,6 +282,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(5px);
         }
 
         .btn-icon:hover {
@@ -269,12 +302,12 @@
             justify-content: center;
             gap: 20px;
             min-height: 0;
+            z-index: 10;
         }
 
         .carousel-wrapper {
             position: relative;
             width: 100%;
-            background: radial-gradient(circle at center, rgba(255, 51, 102, 0.05) 0%, transparent 60%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -362,8 +395,9 @@
 
         .card {
             flex: 0 0 var(--card-w);
-            background-color: var(--bg-card);
-            border: 1px solid #333;
+            background-color: rgba(20, 20, 20, 0.85); /* Làm trong suốt nhẹ */
+            backdrop-filter: blur(8px); /* Hiệu ứng kính mờ */
+            border: 1px solid rgba(255, 51, 102, 0.2);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             border-radius: 4px;
             overflow: hidden;
@@ -377,11 +411,10 @@
         .card:hover {
             transform: translateY(-4px);
             border-color: var(--accent);
-            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
             z-index: 3;
         }
 
-        /* Tăng chiều cao ảnh lên 160% để bù lại phần khung đen đã mất */
         .card-thumbnail {
             position: relative;
             width: 100%;
@@ -399,7 +432,6 @@
             object-fit: cover;
         }
 
-        /* Lớp phủ mờ dần ở dưới đáy ảnh */
         .card-info {
             position: absolute;
             bottom: 0;
@@ -462,24 +494,14 @@
         }
 
         @keyframes pulseGlow {
-            0% {
-                box-shadow: 0 0 15px var(--accent-glow);
-            }
-            100% {
-                box-shadow: 0 0 35px var(--accent);
-            }
+            0% { box-shadow: 0 0 15px var(--accent-glow); }
+            100% { box-shadow: 0 0 35px var(--accent); }
         }
 
         @keyframes winnerShake {
-            0%, 100% {
-                transform: scale(1.1) rotate(0deg);
-            }
-            25% {
-                transform: scale(1.12) rotate(-2deg);
-            }
-            75% {
-                transform: scale(1.12) rotate(2deg);
-            }
+            0%, 100% { transform: scale(1.1) rotate(0deg); }
+            25% { transform: scale(1.12) rotate(-2deg); }
+            75% { transform: scale(1.12) rotate(2deg); }
         }
 
         .action-area {
@@ -489,6 +511,7 @@
             gap: 10px;
             flex-shrink: 0;
             padding-bottom: 10px;
+            z-index: 10;
         }
 
         .btn-random {
@@ -504,12 +527,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
         }
 
         .btn-random:hover:not(:disabled) {
             background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px var(--accent-glow);
+            box-shadow: 0 4px 25px var(--accent-glow);
         }
 
         .btn-random:disabled {
@@ -521,6 +545,7 @@
             font-size: 14px;
             color: var(--text-sub);
             min-height: 20px;
+            text-shadow: 0 1px 2px #000;
         }
 
         /* MODALS */
@@ -752,7 +777,7 @@
         .skeleton-thumbnail {
             position: relative;
             width: 100%;
-            padding-top: 160%; /* Đồng bộ chiều cao */
+            padding-top: 160%;
             background: linear-gradient(90deg, #111 0%, #222 50%, #111 100%);
             background-size: 200% 100%;
             animation: skeletonShimmer 1.4s infinite;
@@ -781,12 +806,8 @@
         }
 
         @keyframes skeletonShimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         /* RESPONSIVE */
@@ -904,6 +925,15 @@
 </head>
 <body>
 
+<!-- NHẠC NỀN: Lofi Chill Nhẹ Nhàng -->
+<audio id="bg-music" loop autoplay muted>
+    <source src="/music/PathofTheWind.mp3" type="audio/mpeg">
+</audio>
+
+<!-- NỀN 3D -->
+<canvas id="bg-canvas"></canvas>
+<div class="overlay-gradient"></div>
+
 <canvas id="confetti-canvas"></canvas>
 
 <header>
@@ -931,7 +961,8 @@
         </div>
 
         <button class="btn-icon" id="btn-history" onclick="openHistoryModal()" title="Lịch sử quay">📜</button>
-        <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔊</button>
+        <!-- Nút Âm thanh -->
+        <button class="btn-icon" id="btn-sound" onclick="toggleSound()" title="Bật/Tắt âm thanh & nhạc nền">🔊</button>
     </div>
 </header>
 
@@ -992,6 +1023,192 @@
     let isRolling = false;
     let currentUser = null;
     const currentYear = new Date().getFullYear();
+    let soundEnabled = true, audioCtx = null;
+
+    // --- NHẠC NỀN ---
+    const bgMusic = document.getElementById('bg-music');
+    bgMusic.volume = 0.4;
+
+    function playMusic() {
+        if (!soundEnabled) return;
+        bgMusic.muted = false;
+        let playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                document.removeEventListener('click', unlockAudio);
+                document.removeEventListener('touchstart', unlockAudio);
+                document.removeEventListener('keydown', unlockAudio);
+            }).catch(error => {
+                console.log("Trình duyệt chặn phát nhạc. Cần click trực tiếp...");
+            });
+        }
+    }
+
+    function unlockAudio() {
+        playMusic();
+    }
+
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+    document.addEventListener('keydown', unlockAudio);
+
+    bgMusic.play().catch(e => {});
+
+    // --- KHỞI TẠO NỀN 3D (HIỆU ỨNG BOKEH MỀM MẠI) ---
+    function init3D() {
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+
+        scene.fog = new THREE.FogExp2(0x0a0a0a, 0.003);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true, antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const canvasTexture = document.createElement('canvas');
+        canvasTexture.width = 64;
+        canvasTexture.height = 64;
+        const context = canvasTexture.getContext('2d');
+        const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gradient.addColorStop(0, 'rgba(255,255,255,1)');
+        gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+        gradient.addColorStop(0.5, 'rgba(255,51,102,0.3)');
+        gradient.addColorStop(1, 'rgba(255,51,102,0)');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 64, 64);
+        const texture = new THREE.CanvasTexture(canvasTexture);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 150;
+        const posArray = new Float32Array(particlesCount * 3);
+        const scaleArray = new Float32Array(particlesCount);
+
+        for (let i = 0; i < particlesCount; i++) {
+            posArray[i * 3] = (Math.random() - 0.5) * 100;
+            posArray[i * 3 + 1] = (Math.random() - 0.5) * 100;
+            posArray[i * 3 + 2] = (Math.random() - 0.5) * 100;
+            scaleArray[i] = Math.random() * 5 + 2;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('scale', new THREE.BufferAttribute(scaleArray, 1));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 4,
+            map: texture,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            color: 0xff5c85
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        const particlesMaterial2 = new THREE.PointsMaterial({
+            size: 3,
+            map: texture,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            color: 0x8a2be2
+        });
+        const particlesMesh2 = new THREE.Points(particlesGeometry, particlesMaterial2);
+        particlesMesh2.position.z = -10;
+        scene.add(particlesMesh2);
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+            particlesMesh.rotation.x = Math.sin(elapsedTime * 0.1) * 0.1;
+
+            particlesMesh2.rotation.y = -elapsedTime * 0.03;
+            particlesMesh2.rotation.x = Math.cos(elapsedTime * 0.1) * 0.1;
+
+            camera.position.x = Math.sin(elapsedTime * 0.2) * 5;
+            camera.position.y = Math.cos(elapsedTime * 0.2) * 5;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    }
+
+    // --- ÂM THANH TICK & WIN ---
+    function getAudioCtx() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+
+    function playTick() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.05);
+        } catch (e) {}
+    }
+
+    function playWin() {
+        if (!soundEnabled) return;
+        try {
+            const ctx = getAudioCtx();
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.4);
+                osc.start(ctx.currentTime + i * 0.12);
+                osc.stop(ctx.currentTime + i * 0.12 + 0.5);
+            });
+        } catch (e) {}
+    }
+
+    function toggleSound() {
+        soundEnabled = !soundEnabled;
+        const btn = document.getElementById('btn-sound');
+
+        if (soundEnabled) {
+            btn.innerText = '🔊';
+            btn.classList.remove('muted');
+            playMusic();
+            playTick();
+        } else {
+            btn.innerText = '🔇';
+            btn.classList.add('muted');
+            bgMusic.muted = true;
+        }
+    }
 
     // --- LOGIC USER DROPDOWN ---
     async function loadCurrentUser() {
@@ -1031,62 +1248,7 @@
         }
     });
 
-    // ÂM THANH
-    let soundEnabled = true, audioCtx = null;
-
-    function getAudioCtx() {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        return audioCtx;
-    }
-
-    function playTick() {
-        if (!soundEnabled) return;
-        try {
-            const ctx = getAudioCtx();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1200, ctx.currentTime);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.05);
-        } catch (e) {
-        }
-    }
-
-    function playWin() {
-        if (!soundEnabled) return;
-        try {
-            const ctx = getAudioCtx();
-            const notes = [523.25, 659.25, 783.99, 1046.50];
-            notes.forEach((freq, i) => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
-                gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.12);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.4);
-                osc.start(ctx.currentTime + i * 0.12);
-                osc.stop(ctx.currentTime + i * 0.12 + 0.5);
-            });
-        } catch (e) {
-        }
-    }
-
-    function toggleSound() {
-        soundEnabled = !soundEnabled;
-        document.getElementById('btn-sound').innerText = soundEnabled ? '🔊' : '🔇';
-        document.getElementById('btn-sound').classList.toggle('muted', !soundEnabled);
-        if (soundEnabled) playTick();
-    }
-
-    // CONFETTI
+    // --- CONFETTI ---
     const confettiCanvas = document.getElementById('confetti-canvas');
     const confettiCtx = confettiCanvas.getContext('2d');
     let confettiParticles = [], confettiAnimating = false;
@@ -1153,7 +1315,7 @@
         }
     }
 
-    // TẢI VÀ RENDER DỮ LIỆU
+    // --- TẢI VÀ RENDER DỮ LIỆU ---
     async function loadActors() {
         showSkeleton(6);
         try {
@@ -1360,6 +1522,9 @@
     // QUAY RANDOM
     async function startRandomRoll() {
         if (isRolling || displayList.length === 0) return;
+
+        playMusic();
+
         closeModal();
         closeHistoryModal();
         isRolling = true;
@@ -1379,8 +1544,7 @@
                     const winnerData = await res.json();
                     winnerIndex = displayList.findIndex(a => String(a.id) === String(winnerData.id));
                 }
-            } catch (e) {
-            }
+            } catch (e) {}
         }
         if (winnerIndex === -1) {
             winnerIndex = Math.floor(Math.random() * displayList.length);
@@ -1442,6 +1606,7 @@
     }
 
     // KHỞI CHẠY
+    init3D();
     loadCurrentUser();
     loadActors();
 
