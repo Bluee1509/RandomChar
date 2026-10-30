@@ -56,7 +56,7 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            background-color: var(--bg-main); /* Nền dự phòng */
+            background-color: var(--bg-main);
         }
 
         /* --- CSS CHO NỀN 3D VÀ NHẠC NỀN --- */
@@ -66,7 +66,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 0; /* Nằm trên màu nền body */
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -76,7 +76,6 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            /* Làm tối để nổi bật thẻ và tạo không gian */
             background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 10, 0.85) 80%);
             z-index: 1;
             pointer-events: none;
@@ -393,34 +392,39 @@
             right: -10px;
         }
 
+        /* --- FIX LỖI TRÀN VIỀN VÀ CHÌM NỀN --- */
         .card {
             flex: 0 0 var(--card-w);
-            background-color: rgba(20, 20, 20, 0.85); /* Làm trong suốt nhẹ */
-            backdrop-filter: blur(8px); /* Hiệu ứng kính mờ */
-            border: 1px solid rgba(255, 51, 102, 0.2);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            border-radius: 4px;
-            overflow: hidden;
+            /* Tăng độ sáng nền thẻ để không bị chìm */
+            background-color: #15171e;
+            /* Thêm viền sáng để tách biệt khỏi nền web */
+            border: 1px solid #2a2d37;
+            border-radius: 6px;
+            overflow: hidden; /* Đưa overflow: hidden vào đây để ép ảnh không tràn */
             display: flex;
             flex-direction: column;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+            /* Tăng tốc phần cứng tránh lỗi render khi lướt */
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         .card:hover {
             transform: translateY(-4px);
             border-color: var(--accent);
-            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 51, 102, 0.3);
             z-index: 3;
         }
 
         .card-thumbnail {
             position: relative;
             width: 100%;
-            padding-top: 160%;
+            aspect-ratio: 10 / 16;
             background-color: #0a0a0a;
-            overflow: hidden;
+            /* Không dùng overflow ở đây nữa */
         }
 
         .card-thumbnail img {
@@ -430,6 +434,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* Phóng ảnh lên 1% để mép ảnh luôn tràn khỏi viền, không bao giờ lộ vạch trắng */
+            transform: scale(1.01);
         }
 
         .card-info {
@@ -439,7 +445,8 @@
             width: 100%;
             padding: 40px 10px 12px 10px;
             text-align: center;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 60%, transparent 100%);
+            /* Gradient đậm hơn để tách biệt chữ khỏi ảnh */
+            background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%);
             z-index: 2;
             pointer-events: none;
         }
@@ -464,14 +471,14 @@
 
         .card.active-roll {
             border-color: var(--accent) !important;
-            transform: scale(1.06) !important;
+            transform: scale(1.06) translateZ(0) !important;
             box-shadow: 0 0 20px var(--accent-glow) !important;
             z-index: 4 !important;
         }
 
         .card.winner {
             border-color: var(--accent) !important;
-            transform: scale(1.1) !important;
+            transform: scale(1.1) translateZ(0) !important;
             box-shadow: 0 0 30px var(--accent-glow) !important;
             z-index: 5 !important;
             animation: pulseGlow 1.2s infinite alternate, winnerShake 0.5s ease-in-out 3;
@@ -494,14 +501,24 @@
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 15px var(--accent-glow); }
-            100% { box-shadow: 0 0 35px var(--accent); }
+            0% {
+                box-shadow: 0 0 15px var(--accent-glow);
+            }
+            100% {
+                box-shadow: 0 0 35px var(--accent);
+            }
         }
 
         @keyframes winnerShake {
-            0%, 100% { transform: scale(1.1) rotate(0deg); }
-            25% { transform: scale(1.12) rotate(-2deg); }
-            75% { transform: scale(1.12) rotate(2deg); }
+            0%, 100% {
+                transform: scale(1.1) translateZ(0) rotate(0deg);
+            }
+            25% {
+                transform: scale(1.12) translateZ(0) rotate(-2deg);
+            }
+            75% {
+                transform: scale(1.12) translateZ(0) rotate(2deg);
+            }
         }
 
         .action-area {
@@ -770,14 +787,14 @@
             flex: 0 0 var(--card-w);
             background-color: var(--bg-card);
             border: 1px solid #222;
-            border-radius: 4px;
+            border-radius: 6px;
             overflow: hidden;
         }
 
         .skeleton-thumbnail {
             position: relative;
             width: 100%;
-            padding-top: 160%;
+            aspect-ratio: 10 / 16;
             background: linear-gradient(90deg, #111 0%, #222 50%, #111 100%);
             background-size: 200% 100%;
             animation: skeletonShimmer 1.4s infinite;
@@ -806,8 +823,12 @@
         }
 
         @keyframes skeletonShimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
 
         /* RESPONSIVE */
@@ -1052,7 +1073,8 @@
     document.addEventListener('touchstart', unlockAudio);
     document.addEventListener('keydown', unlockAudio);
 
-    bgMusic.play().catch(e => {});
+    bgMusic.play().catch(e => {
+    });
 
     // --- KHỞI TẠO NỀN 3D (HIỆU ỨNG BOKEH MỀM MẠI) ---
     function init3D() {
@@ -1171,7 +1193,8 @@
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
             osc.start();
             osc.stop(ctx.currentTime + 0.05);
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 
     function playWin() {
@@ -1191,7 +1214,8 @@
                 osc.start(ctx.currentTime + i * 0.12);
                 osc.stop(ctx.currentTime + i * 0.12 + 0.5);
             });
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 
     function toggleSound() {
@@ -1349,9 +1373,9 @@
                 <div class="card" id="card-${actor.id}" onclick="openModal('${actor.id}')">
                     <div class="card-thumbnail">
                         <img src="${actor.imageUrl || fallbackImg}" alt="${actor.name}" onerror="this.src='${fallbackImg}'">
-                    </div>
-                    <div class="card-info">
-                        <div class="card-name" title="${actor.name}">${actor.name}</div>
+                        <div class="card-info">
+                            <div class="card-name" title="${actor.name}">${actor.name}</div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1544,7 +1568,8 @@
                     const winnerData = await res.json();
                     winnerIndex = displayList.findIndex(a => String(a.id) === String(winnerData.id));
                 }
-            } catch (e) {}
+            } catch (e) {
+            }
         }
         if (winnerIndex === -1) {
             winnerIndex = Math.floor(Math.random() * displayList.length);
