@@ -981,8 +981,15 @@
                         </button>
                         <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;"
                                onchange="importExcelOrCsv(event)">
+                        <!-- Nút này thêm mới, nằm cạnh nút Nhập File cũ -->
+                        <button class="btn-action" style="background: #eab308; color: #fff;"
+                                onclick="document.getElementById('excelCodeInput').click()">
+                            📝 Nhập Code Hàng Loạt
+                        </button>
+                        <input type="file" id="excelCodeInput" accept=".xlsx, .xls, .csv" style="display: none;"
+                               onchange="importCodesOnly(event)">
 
-                        <button class="btn-action btn-export" onclick="exportCSV()">📥 Xuất CSV</button>
+                        <button class="btn-action btn-export" onclick="exportExcel()">📥 Xuất File</button>
                     </div>
                 </div>
 
@@ -1545,19 +1552,37 @@
         }
     }
 
-    function exportCSV() {
+    function exportExcel() {
         if (filteredActors.length === 0) return showToast("Không có dữ liệu để xuất", "error");
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-        csvContent += "Tên,Năm Sinh,Code,Link Ảnh,Website\n";
-        filteredActors.forEach(a => {
-            csvContent += `"${a.name.replace(/"/g, '""')}",${a.birthYear || ''},"${(a.famousCode || '').replace(/"/g, '""')}",${a.imageUrl || ''},${a.webUrl || ''}\n`;
-        });
-        const link = document.createElement("a");
-        link.setAttribute("href", encodeURI(csvContent));
-        link.setAttribute("download", `dien_vien_${new Date().getTime()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+        // 1. Chuyển đổi dữ liệu sang định dạng mảng các Object với tên cột tiếng Việt
+        const dataForExcel = filteredActors.map(a => ({
+            "Tên Diễn Viên": a.name,
+            "Năm Sinh": a.birthYear || '',
+            "Code": a.famousCode || '',
+            "Link Ảnh": a.imageUrl || '',
+            "Website": a.webUrl || ''
+        }));
+
+        // 2. Tạo Worksheet (Trang tính)
+        const ws = XLSX.utils.json_to_sheet(dataForExcel);
+
+        // 3. Căn chỉnh độ rộng cột cho đẹp (wch là width tính theo ký tự)
+        ws['!cols'] = [
+            { wch: 25 }, // Cột Tên
+            { wch: 10 }, // Cột Năm sinh
+            { wch: 30 }, // Cột Code
+            { wch: 40 }, // Cột Link Ảnh
+            { wch: 30 }  // Cột Website
+        ];
+
+        // 4. Tạo Workbook (File Excel)
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Danh Sách Diễn Viên");
+
+        // 5. Xuất và tải file về máy
+        const fileName = `danh_sach_dien_vien_${new Date().getTime()}.xlsx`;
+        XLSX.writeFile(wb, fileName);
     }
 
     async function importExcelOrCsv(event) {
@@ -1649,6 +1674,89 @@
         } else {
             reader.readAsArrayBuffer(file);
         }
+    }
+
+
+    async function importCodesOnly(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                let jsonData = [];
+                if (file.name.endsWith('.csv')) {
+                    const text = e.target.result;
+                    const workbook = XLSX.read(text, {type: 'string'});
+                    jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
+                } else {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
+                }
+
+                const dataRows = jsonData.slice(1);
+                let successCount = 0;
+                let skipCount = 0;
+
+                showToast(`Đang cập nhật Code cho ${dataRows.length} dòng...`, 'info');
+
+                for (let row of dataRows) {
+                    // Chỉ cần cột 0 là Tên, cột 1 là Code
+                    if (!row || row.length < 2 || !row[0]) continue;
+
+                    const name = String(row[0]).trim();
+                    const newCodes = String(row[1]).trim();
+
+                    // Tìm diễn viên trong danh sách hiện tại (chỉ dựa vào Tên, không phân biệt hoa thường)
+                    const actor = allActors.find(a => a.name.trim().toLowerCase() === name.toLowerCase());
+
+                    if (actor) {
+                        let combinedCode = actor.famousCode || "";
+
+                        // Tách mảng code mới và cũ để gộp
+                        let codeArray = combinedCode.split(',').map(c => c.trim()).filter(c => c !== "");
+                        let newCodeArray = newCodes.split(',').map(c => c.trim()).filter(c => c !== "");
+
+                        // Thêm code mới nếu chưa tồn tại trong danh sách cũ
+                        newCodeArray.forEach(newCode => {
+                            if (!codeArray.includes(newCode)) {
+                                codeArray.push(newCode);
+                            }
+                        });
+
+                        combinedCode = codeArray.join(', ');
+
+                        // Gọi API PATCH cập nhật vào DB
+                        const res = await fetch(`/api/actors/${actor.id}`, {
+                            method: 'PATCH',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ famousCode: combinedCode })
+                        });
+
+                        if (res.ok) successCount++;
+                        else skipCount++;
+                    } else {
+                        skipCount++; // Không tìm thấy tên trong DB
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Delay 100ms chống nghẽn server
+                }
+
+                showToast(`Cập nhật xong! Thành công: ${successCount}. Bỏ qua: ${skipCount}.`, successCount > 0 ? 'success' : 'error');
+
+                event.target.value = '';
+                loadActors(); // Tải lại bảng để hiển thị code mới
+
+            } catch (error) {
+                console.error(error);
+                showToast("File không hợp lệ hoặc bị lỗi!", "error");
+                event.target.value = '';
+            }
+        };
+
+        if (file.name.endsWith('.csv')) reader.readAsText(file);
+        else reader.readAsArrayBuffer(file);
     }
 
     async function loadUsers() {
