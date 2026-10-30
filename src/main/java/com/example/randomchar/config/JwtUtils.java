@@ -2,6 +2,7 @@ package com.example.randomchar.config;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
-    // Khóa bí mật (Nên đưa vào application.properties, ở đây hardcode cho nhanh)
-    private static final String SECRET_KEY = "RandomCharSuperSecretKeyForJwtToken2024!@#";
+    @Value("${app.jwt.secret}")
+    private String SECRET_KEY;
+
     private static final int JWT_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 ngày
 
     private Key getSigningKey() {
@@ -37,6 +39,12 @@ public class JwtUtils {
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // THÊM HÀM NÀY ĐỂ LẤY ROLES TỪ TOKEN
+    public String getRolesFromJwtToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
+                .parseClaimsJws(token).getBody().get("roles", String.class);
     }
 
     public boolean validateJwtToken(String authToken) {

@@ -61,16 +61,34 @@ public class AuthController {
         String password = request.get("password");
         String email = request.get("email");
 
+        // 1. Kiểm tra dữ liệu rỗng (Tránh lỗi NullPointerException)
+        if (username == null || username.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Tên đăng nhập không được để trống!"));
+        }
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Email không được để trống!"));
+        }
+        if (password == null) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Mật khẩu không được để trống!"));
+        }
+
+        // 2. Chuẩn hóa dữ liệu (Giữ nguyên chữ hoa/thường của username)
+        username = username.trim();
+        email = email.trim().toLowerCase();
+
         if (!isValidPassword(password)) {
             return ResponseEntity.badRequest().body(Map.of("message",
                     "Mật khẩu phải từ 6-20 ký tự và bao gồm cả chữ cái và chữ số!"));
         }
 
+
         // BƯỚC 0: CHẶN TÊN HỆ THỐNG
+        // Vẫn dùng equalsIgnoreCase để chặn mọi biến thể của tên Admin
         if (systemAdminUsername.equalsIgnoreCase(username)) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", "Tên đăng nhập này là của hệ thống, vui lòng chọn tên khác!"));
         }
+
         List<String> reservedWords = List.of("root", "administrator", "system", "support", "mod");
         if (reservedWords.contains(username.toLowerCase())) {
             return ResponseEntity.badRequest()

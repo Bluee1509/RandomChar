@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -59,7 +58,7 @@ public class SecurityConfig {
         return username -> userRepository.findByUsername(username)
                 .map(user -> {
                     // Nếu username trùng với adminUsername trong env -> cấp quyền ADMIN
-                    String role = user.getUsername().equals(adminUsername) ? "ADMIN" : "USER";
+                    String role = user.getUsername().equalsIgnoreCase(adminUsername) ? "ADMIN" : "USER";
                     return User.builder()
                             .username(user.getUsername())
                             .password(user.getPassword())

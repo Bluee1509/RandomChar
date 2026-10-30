@@ -28,20 +28,21 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Optional<User> adminOpt = userRepository.findByUsername(adminUsername);
+        // SỬA LẠI: Chỉ trim(), giữ nguyên chữ hoa/thường từ biến môi trường
+        String normalizedAdminUsername = adminUsername.trim();
+
+        Optional<User> adminOpt = userRepository.findByUsername(normalizedAdminUsername);
 
         if (adminOpt.isEmpty()) {
-            // Nếu Admin chưa tồn tại -> Tạo mới
             User admin = User.builder()
-                    .username(adminUsername)
-                    .password(passwordEncoder.encode(adminPassword)) // Phải mã hóa BCrypt
-                    .email(adminUsername + "@randomchar.com") // Email fake vì trong DB bắt buộc có email
-                    .enabled(true) // Kích hoạt tài khoản
+                    .username(normalizedAdminUsername)
+                    .password(passwordEncoder.encode(adminPassword))
+                    .email(normalizedAdminUsername + "@randomchar.com")
+                    .enabled(true)
                     .build();
             userRepository.save(admin);
-            System.out.println("✅ Đã tạo tài khoản Admin mới trong Database: " + adminUsername);
+            System.out.println("✅ Đã tạo tài khoản Admin trong Database: " + normalizedAdminUsername);
         } else {
-            // Nếu Admin đã tồn tại -> Kiểm tra xem mật khẩu trên Render có bị đổi không
             User existingAdmin = adminOpt.get();
             if (!passwordEncoder.matches(adminPassword, existingAdmin.getPassword())) {
                 existingAdmin.setPassword(passwordEncoder.encode(adminPassword));

@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,16 +36,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                // Lấy roles từ token (Bạn có thể custom lại phần này nếu lưu roles phức tạp hơn)
-                // Ở đây mình lấy claim roles từ token
-                var claims = io.jsonwebtoken.Jwts.parserBuilder()
-                        .setSigningKey(io.jsonwebtoken.security.Keys.hmacShaKeyFor("RandomCharSuperSecretKeyForJwtToken2024!@#".getBytes()))
-                        .build().parseClaimsJws(jwt).getBody();
-                String rolesStr = claims.get("roles", String.class);
+                // SỬA LẠI: Không tự parse token ở đây nữa, gọi qua JwtUtils
+                String rolesStr = jwtUtils.getRolesFromJwtToken(jwt);
 
-                List<SimpleGrantedAuthority> authorities = Arrays.stream(rolesStr.split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                List<SimpleGrantedAuthority> authorities;
+                if (rolesStr != null && !rolesStr.isEmpty()) {
+                    authorities = Arrays.stream(rolesStr.split(","))
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+                } else {
+                    authorities = Collections.emptyList();
+                }
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         username, null, authorities);
