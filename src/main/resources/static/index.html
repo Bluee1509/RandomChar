@@ -429,13 +429,13 @@
 
         .card-thumbnail img {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -1px; /* Kéo ảnh lên trên 1px */
+            left: -1px; /* Kéo ảnh sang trái 1px */
+            width: calc(100% + 2px); /* Tăng chiều rộng lên 2px */
+            height: calc(100% + 2px); /* Tăng chiều cao lên 2px */
             object-fit: cover;
-            /* Phóng ảnh lên 1% để mép ảnh luôn tràn khỏi viền, không bao giờ lộ vạch trắng */
-            transform: scale(1.01);
+            display: block; /* Khử khoảng trắng thừa của thẻ inline */
+            /* Xóa bỏ transform: scale(1.01); */
         }
 
         .card-info {
@@ -470,16 +470,24 @@
         }
 
         .card.active-roll {
-            border-color: var(--accent) !important;
+            border-color: transparent !important;
+            /* Viền mỏng 1px + Tỏa sáng nhẹ */
+            box-shadow:
+                    0 0 0 1px var(--accent),
+                    0 0 15px var(--accent-glow) !important;
             transform: scale(1.06) translateZ(0) !important;
-            box-shadow: 0 0 20px var(--accent-glow) !important;
             z-index: 4 !important;
         }
 
         .card.winner {
-            border-color: var(--accent) !important;
+            border-color: transparent !important;
+            /* Viền mỏng 1px + 3 lớp tỏa sáng gradient lan dần ra ngoài */
+            box-shadow:
+                    0 0 0 1px var(--accent),
+                    0 0 10px var(--accent),
+                    0 0 25px var(--accent-glow),
+                    0 0 45px rgba(255, 51, 102, 0.3) !important;
             transform: scale(1.1) translateZ(0) !important;
-            box-shadow: 0 0 30px var(--accent-glow) !important;
             z-index: 5 !important;
             animation: pulseGlow 1.2s infinite alternate, winnerShake 0.5s ease-in-out 3;
         }
@@ -502,22 +510,30 @@
 
         @keyframes pulseGlow {
             0% {
-                box-shadow: 0 0 15px var(--accent-glow);
+                box-shadow:
+                        0 0 0 1px var(--accent),
+                        0 0 8px var(--accent-glow),
+                        0 0 15px var(--accent-glow),
+                        0 0 25px rgba(255, 51, 102, 0.1);
             }
             100% {
-                box-shadow: 0 0 35px var(--accent);
+                box-shadow:
+                        0 0 0 1px var(--accent),
+                        0 0 15px var(--accent),
+                        0 0 35px var(--accent-glow),
+                        0 0 60px rgba(255, 51, 102, 0.4);
             }
         }
 
         @keyframes winnerShake {
             0%, 100% {
-                transform: scale(1.1) translateZ(0) rotate(0deg);
+                transform: scale(1.1) translateZ(0) translateX(0);
             }
             25% {
-                transform: scale(1.12) translateZ(0) rotate(-2deg);
+                transform: scale(1.12) translateZ(0) translateX(-4px);
             }
             75% {
-                transform: scale(1.12) translateZ(0) rotate(2deg);
+                transform: scale(1.12) translateZ(0) translateX(4px);
             }
         }
 
